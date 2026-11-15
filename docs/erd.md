@@ -52,7 +52,7 @@ erDiagram
 
 ## Pembagian validasi
 
-Constraint database menjaga foreign key, keunikan, isi dasar, dan urutan tanggal. Hari 2 menambahkan otorisasi peran/status dari database pada middleware dan server. Validasi upload, minimal tag, larangan melaporkan karya sendiri, serta batas waktu submit/withdraw/pemenang dibuat pada tahap fitur masing-masing.
+Constraint database menjaga foreign key, keunikan, isi dasar, dan urutan tanggal. Middleware memverifikasi JWT tanpa database. Halaman server, server action, dan route handler memeriksa sesi aktif serta otorisasi peran/status melalui database. Validasi upload, minimal tag, larangan melaporkan karya sendiri, serta batas waktu submit/withdraw/pemenang dibuat pada tahap fitur masing-masing.
 
 Untuk menangani permintaan bersamaan saat challenge berubah, backend challenge nanti mengunci baris challenge dengan SELECT ... FOR UPDATE dalam transaksi, lalu memeriksa waktu serta kepemilikan sebelum menulis.
 

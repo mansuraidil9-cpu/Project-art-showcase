@@ -6,7 +6,7 @@ Tahap saat ini: **Hari 2 — autentikasi**. Register Member/Curator, login, logo
 
 ## Teknologi
 
-Next.js 15.5 (App Router), JavaScript/JSX, Tailwind CSS 4, PostgreSQL, dan pg dengan Raw SQL. bcryptjs dipakai untuk password dan jose untuk JWT. Middleware memakai runtime Node.js agar bisa memeriksa sesi dan role terkini melalui pg.
+Next.js 15.5 (App Router), JavaScript/JSX, Tailwind CSS 4, PostgreSQL, dan pg dengan Raw SQL. bcryptjs dipakai untuk password dan jose untuk JWT. Middleware memverifikasi JWT dari cookie tanpa koneksi database. Halaman server, server action, dan route handler memeriksa sesi aktif serta role/status terkini melalui pg.
 
 Lingkungan pengguna: Node.js 24.21.0, klien psql 18.6, Windows, PowerShell. Versi server diperiksa melalui npm run db:check, bukan hanya versi psql.
 
@@ -114,6 +114,8 @@ Build tidak memerlukan database aktif karena halaman dirender saat permintaan (f
 Pengujian constraint di pgAdmin: jalankan database/tests/constraints.sql setelah seed. Skrip membatalkan perubahan pada akhir tes. Jika gagal, jalankan ROLLBACK sebelum mengulang. npm run db:test menguji constraint dan helper transaksi pada dua tabel dengan data uji sementara. Jalankan pada database pengembangan yang sudah di-seed. Hasil verifikasi lingkungan pengembangan dicatat di docs/verifikasi-hari-1.md.
 
 Tambahkan npm run auth:test untuk memeriksa validasi, JWT, pencabutan sesi, transaksi pendaftaran, perubahan status Curator, dan counter percobaan. Gunakan database pengembangan yang sudah dimigrasi. Login produksi memakai cookie Secure sehingga server yang diakses melalui jaringan harus menggunakan HTTPS; npm run dev cocok untuk pengujian HTTP lokal.
+
+Jalankan npm run auth:token-test untuk menguji verifikasi JWT tanpa koneksi database. Middleware berada di root middleware.js karena proyek menggunakan app/ di root dan tidak memakai folder src/.
 
 ## Git dan GitHub
 

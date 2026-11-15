@@ -10,7 +10,8 @@
     "db:check": "node scripts/check-db.mjs",
     "db:test": "node --conditions=react-server scripts/test-db.mjs",
     "auth:secret": "node scripts/setup-session.mjs",
-    "auth:test": "node --conditions=react-server scripts/test-auth.mjs"
+    "auth:test": "node --conditions=react-server scripts/test-auth.mjs",
+    "auth:token-test": "node --conditions=react-server scripts/test-session-token.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

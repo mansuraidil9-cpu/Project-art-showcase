@@ -14,9 +14,11 @@ Login membandingkan password memakai bcrypt.compare. Untuk email tidak ditemukan
 
 ## Pemeriksaan akses
 
-Middleware memakai runtime Node.js pada Next.js 15.5 agar bisa mengakses pg. Jalur login/register, dashboard, dan curator-status dicocokkan melalui matcher.
+Middleware memakai runtime Edge bawaan Next.js dan hanya mengimpor helper JWT lib/session-token.js. Helper ini memakai jose dan Web Crypto; tidak mengimpor pg, lib/db.js, lib/session.js, atau node:crypto. Matcher mencakup dashboard dan curator-status. File middleware.js berada di root karena app/ juga berada di root, tanpa folder src/.
 
-Setiap pemeriksaan memverifikasi tanda tangan dan kedaluwarsa JWT, mencari sesi aktif, lalu membaca akun beserta status terkini dari database. Middleware bukan satu-satunya pengaman: setiap halaman dashboard memanggil requireUser dengan peran yang tepat, action hapus memeriksa ulang status dalam transaksi, dan route handler sesi memeriksa pengguna sendiri.
+Middleware memeriksa tanda tangan, issuer, audience, ID, dan kedaluwarsa JWT dari cookie. Setelah lolos, setiap halaman dashboard memanggil requireUser untuk mencari sesi aktif dan memeriksa role/status terbaru melalui database sebelum menampilkan data privat. Server action dan route handler mengulang pemeriksaan sesuai operasinya; action hapus juga mengunci akun dan sesi dalam transaksi.
+
+JWT yang masih valid secara kriptografi dapat memiliki sesi yang sudah dicabut. Karena itu, lolos middleware belum memberikan izin mengakses data. Pemeriksaan database di server menentukan akses akhir. Halaman login/register memeriksa sesi dari server sendiri; cookie lama yang sudah dicabut tetap dapat membuka login tanpa putaran redirect.
 
 JWT tidak menyimpan role/status, sehingga persetujuan atau penolakan langsung berlaku pada cookie yang masih aktif. Halaman status memiliki tombol Periksa status lagi untuk meminta halaman terbaru.
 
@@ -45,13 +47,15 @@ Server Actions Next.js memeriksa Origin terhadap host. Jangan menonaktifkan peme
 ## File yang perlu dipahami
 
 - lib/validation.js: normalisasi dan validasi murni.
-- lib/session.js: JWT, hashing ID sesi, pembacaan status, dan tujuan setelah login.
+- lib/session-token.js: tanda tangan dan verifikasi JWT tanpa database; aman untuk runtime Edge.
+- lib/session.js: pencatatan sesi, hashing ID sesi, pembacaan status, dan tujuan setelah login.
 - lib/auth.js: akses cookie dan pemeriksaan pengguna/peran.
 - app/actions/auth.js: daftar, masuk, keluar, dan hapus akun ditolak.
-- middleware.js: pemeriksaan sebelum halaman dilayani.
+- middleware.js: verifikasi JWT dari cookie sebelum halaman privat dilayani, tanpa PostgreSQL.
 - database/queries/auth/: SQL autentikasi.
 - database/migrations/002-auth.sql: penambahan tabel pada database Hari 1.
 - scripts/test-auth.mjs: pengujian sesi dan transaksi yang dapat diulang.
+- scripts/test-session-token.mjs: pengujian token tanpa konfigurasi database.
 
 ## Lima pertanyaan presentasi
 
