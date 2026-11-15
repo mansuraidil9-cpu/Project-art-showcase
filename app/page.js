@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import AuthLinks from "@/components/auth-links";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function Home() {
     <div className="mx-auto max-w-6xl px-5 sm:px-9">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-300 py-7">
         <Link href="/" className="text-xl font-bold tracking-tight text-stone-800">ruang karya<span className="text-orange-800">.</span></Link>
-        <span className="text-sm text-stone-600">Seni, cerita, dan sudut pandang.</span>
+        <AuthLinks />
       </header>
       <main id="konten" className="pb-20">
         <section className="grid gap-10 py-14 md:grid-cols-[1.3fr_1fr] md:py-20">
