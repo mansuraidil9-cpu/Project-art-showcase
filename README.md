@@ -12,10 +12,13 @@ Lingkungan pengguna: Node.js 24.21.0, klien psql 18.6, Windows, PowerShell. Vers
 
 ## Menjalankan di Windows
 
-Ekstrak proyek ke folder milikmu, misalnya Documents\\art-showcase. Buka folder tersebut di VS Code, lalu terminal PowerShell. Jangan bekerja di C:\\Windows\\System32.
+Buka PowerShell, lalu ambil proyek dari repository akun tugas. Perintah berikut membuat folder Project-art-showcase di Documents. Jika folder tersebut sudah ada, gunakan folder baru atau buka proyek yang sudah dikloning.
 
 ```powershell
-Set-Location "$env:USERPROFILE\\Documents\\art-showcase"
+Set-Location "$env:USERPROFILE\Documents"
+git clone https://github.com/mansuraidil9-cpu/Project-art-showcase.git
+Set-Location .\Project-art-showcase
+code .
 npm ci
 Copy-Item .env.example .env.local
 code .env.local
@@ -37,8 +40,8 @@ SQL tidak membuat atau menghapus database. schema.sql bisa dijalankan ulang pada
 Alternatif PowerShell, setelah database dibuat:
 
 ```powershell
-& "C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\\database\\schema.sql
-& "C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\\database\\seed.sql
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\database\schema.sql
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\database\seed.sql
 npm run db:check
 npm run db:test
 npm run dev
@@ -93,43 +96,30 @@ Build tidak memerlukan database aktif karena halaman dirender saat permintaan (f
 
 Pengujian constraint di pgAdmin: jalankan database/tests/constraints.sql setelah seed. Skrip membatalkan perubahan pada akhir tes. Jika gagal, jalankan ROLLBACK sebelum mengulang. npm run db:test menguji constraint dan helper transaksi pada dua tabel dengan data uji sementara. Jalankan pada database pengembangan yang sudah di-seed. Hasil verifikasi lingkungan pengembangan dicatat di docs/verifikasi-hari-1.md.
 
-## Git dan akun GitHub berbeda
+## Git dan GitHub
 
-Identitas penulis commit dan akun yang dipakai login GitHub adalah dua hal berbeda. Tetapkan identitas hanya untuk repository ini setelah data akun dipastikan:
+Repository: https://github.com/mansuraidil9-cpu/Project-art-showcase
+
+Branch main sudah diunggah ke akun tugas. Identitas penulis commit dan akun yang dipakai login GitHub adalah dua hal berbeda. Setelah git clone di Windows, tetapkan identitas lokal repository:
 
 ```powershell
 git config --local user.name "mansuraidil9-cpu"
 git config --local user.email "230917730+mansuraidil9-cpu@users.noreply.github.com"
+git remote -v
 git status
 ```
 
-Jika memakai paket ZIP tanpa folder .git:
+git clone otomatis memasang origin; tidak perlu menjalankan git remote add lagi. Untuk perubahan selanjutnya, periksa dahulu file yang berubah, lalu commit dan push:
 
 ```powershell
-git init -b main
+git status
 git add .
-git commit -m "Siapkan fondasi Next.js dan database Ruang Karya"
+git diff --cached
+git commit -m "Jelaskan perubahan yang sudah selesai"
+git push
 ```
 
-Buat repository kosong pada akun GitHub untuk tugasmu. Jangan tambahkan README, lisensi, atau gitignore dari GitHub saat membuatnya. Setelah URL tersedia:
-
-```powershell
-git remote add origin https://github.com/USERNAME/NAMA_REPOSITORY.git
-git push -u origin main
-```
-
-Ganti USERNAME dan NAMA_REPOSITORY dengan milik akun tugas. Jika Git Credential Manager meminta login, pilih akun tugas tersebut. Jangan masukkan password atau token ke URL. Repo ini belum dihubungkan ke akun GitHub mana pun.
-
-Jika menerima paket Git bundle, kloning untuk mempertahankan commit:
-
-```powershell
-git clone .\\ruang-karya-hari-1.bundle art-showcase
-Set-Location .\\art-showcase
-git remote remove origin
-npm ci
-```
-
-Setelah itu isi konfigurasi lokal dan tambahkan remote GitHub seperti di atas.
+Jika Git Credential Manager membuka halaman login, pilih akun mansuraidil9-cpu. Jangan masukkan password atau token ke URL. .env.local dan file unggahan diabaikan Git. Pastikan keduanya tidak muncul dalam daftar perubahan sebelum commit.
 
 ## Jadwal
 
