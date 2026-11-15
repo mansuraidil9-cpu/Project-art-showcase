@@ -40,6 +40,7 @@ Alternatif PowerShell, setelah database dibuat:
 & "C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\\database\\schema.sql
 & "C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" -h localhost -p 5432 -U postgres -d art_showcase -v ON_ERROR_STOP=1 -f .\\database\\seed.sql
 npm run db:check
+npm run db:test
 npm run dev
 ```
 
@@ -90,15 +91,15 @@ npm start
 
 Build tidak memerlukan database aktif karena halaman dirender saat permintaan (force-dynamic). Keberhasilan build tidak membuktikan koneksi; gunakan db:check dan browser juga.
 
-Pengujian constraint di pgAdmin: jalankan database/tests/constraints.sql setelah seed. Skrip membatalkan perubahan pada akhir tes. Jika gagal, jalankan ROLLBACK sebelum mengulang. Hasil verifikasi lingkungan pengembangan dicatat di docs/verifikasi-hari-1.md.
+Pengujian constraint di pgAdmin: jalankan database/tests/constraints.sql setelah seed. Skrip membatalkan perubahan pada akhir tes. Jika gagal, jalankan ROLLBACK sebelum mengulang. npm run db:test menguji constraint dan helper transaksi pada dua tabel dengan data uji sementara. Jalankan pada database pengembangan yang sudah di-seed. Hasil verifikasi lingkungan pengembangan dicatat di docs/verifikasi-hari-1.md.
 
 ## Git dan akun GitHub berbeda
 
 Identitas penulis commit dan akun yang dipakai login GitHub adalah dua hal berbeda. Tetapkan identitas hanya untuk repository ini setelah data akun dipastikan:
 
 ```powershell
-git config --local user.name "NAMA_KAMU"
-git config --local user.email "EMAIL_COMMIT_KAMU"
+git config --local user.name "mansuraidil9-cpu"
+git config --local user.email "230917730+mansuraidil9-cpu@users.noreply.github.com"
 git status
 ```
 
