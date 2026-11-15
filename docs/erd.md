@@ -4,7 +4,18 @@ Guest tidak mempunyai baris akun. Peran akun tersimpan di users; curator_status 
 
 ```mermaid
 erDiagram
+ AUTH_LIMITS {
+  string key PK
+  int attempts
+  timestamptz expires_at
+ }
+ SESSIONS {
+  string token_hash PK
+  int user_id FK
+  timestamptz expires_at
+ }
  USERS ||--o{ ARTWORKS : membuat
+ USERS ||--o{ SESSIONS : memiliki
  CATEGORIES ||--o{ ARTWORKS : mengelompokkan
  ARTWORKS ||--|{ ARTWORK_TAGS : memiliki
  TAGS ||--o{ ARTWORK_TAGS : digunakan
@@ -27,6 +38,8 @@ erDiagram
 
 ## Keputusan desain
 
+- **Sesi (Hari 2):** tabel sessions menyimpan hash ID sesi, akun pemilik, dan kedaluwarsa. auth_limits menyimpan counter percobaan autentikasi; tabel ini tidak berelasi langsung dengan users karena juga mencatat email yang belum terdaftar.
+
 - **Relasi tags:** tabel artwork_tags menghubungkan banyak karya dengan banyak tag, tanpa menyimpan daftar koma di satu kolom. Minimal satu tag divalidasi dalam transaksi pada modul karya Hari 4; ERD menggambarkan aturan bisnis tersebut.
 - **Submisi milik peserta:** foreign key gabungan (artwork_id, member_id) memastikan karya dimiliki peserta. UNIQUE(challenge_id, member_id) membatasi satu karya per peserta.
 - **Pemenang:** foreign key gabungan memastikan submisi berasal dari challenge yang sama. Rank hanya 1–3, unik per challenge; submission_id unik agar satu karya tidak memperoleh dua peringkat dalam challenge.
@@ -39,7 +52,7 @@ erDiagram
 
 ## Pembagian validasi
 
-Constraint database sudah menjaga foreign key, keunikan, isi dasar, dan urutan tanggal. Otorisasi peran, validasi upload, minimal tag, larangan melaporkan karya sendiri, serta batas waktu submit/withdraw/pemenang akan diperiksa kembali di backend pada tahap fitur masing-masing. Skema Hari 1 bukan sistem otorisasi lengkap.
+Constraint database menjaga foreign key, keunikan, isi dasar, dan urutan tanggal. Hari 2 menambahkan otorisasi peran/status dari database pada middleware dan server. Validasi upload, minimal tag, larangan melaporkan karya sendiri, serta batas waktu submit/withdraw/pemenang dibuat pada tahap fitur masing-masing.
 
 Untuk menangani permintaan bersamaan saat challenge berubah, backend challenge nanti mengunci baris challenge dengan SELECT ... FOR UPDATE dalam transaksi, lalu memeriksa waktu serta kepemilikan sebelum menulis.
 
