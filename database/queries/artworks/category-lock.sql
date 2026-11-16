@@ -1,0 +1,1 @@
+SELECT id FROM categories WHERE id=$1 FOR KEY SHARE;

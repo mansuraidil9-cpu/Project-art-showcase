@@ -1,19 +1,11 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import useActionForm from "@/components/use-action-form";
 import { saveCategoryAction, deleteCategoryAction, deleteUserAction, verifyCuratorAction } from "@/app/actions/admin";
 
-const initial = { success: false, message: "", fields: {}, values: {} };
 const inputClass = "mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-stone-800";
 const buttonClass = "rounded-lg bg-stone-800 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-wait disabled:opacity-60";
 
-function useAdminForm(action) {
-  const [state, formAction, pending] = useActionState(action, initial);
-  useEffect(() => {
-    if (state.success && state.redirectTo) window.location.assign(state.redirectTo);
-  }, [state]);
-  return [state, formAction, pending || Boolean(state.redirectTo)];
-}
 
 function Message({ state }) {
   if (!state.message) return null;
@@ -21,7 +13,7 @@ function Message({ state }) {
 }
 
 export function CategoryForm({ category }) {
-  const [state, action, pending] = useAdminForm(saveCategoryAction);
+  const [state, action, pending] = useActionForm(saveCategoryAction);
   const values = Object.keys(state.values).length ? state.values : category || {};
   return <form action={action} className="space-y-5" aria-busy={pending}>
     <input type="hidden" name="id" value={category?.id || ""} />
@@ -42,7 +34,7 @@ export function CategoryForm({ category }) {
 }
 
 export function DeleteCategoryForm({ id, name, artworkCount }) {
-  const [state, action, pending] = useAdminForm(deleteCategoryAction);
+  const [state, action, pending] = useActionForm(deleteCategoryAction);
   if (artworkCount > 0) return <p className="text-xs leading-5 text-stone-500">Penghapusan tersedia setelah karya dipindahkan ke kategori lain.</p>;
   return <details className="text-sm">
     <summary className="w-fit cursor-pointer font-semibold text-red-900">Hapus kategori</summary>
@@ -56,7 +48,7 @@ export function DeleteCategoryForm({ id, name, artworkCount }) {
 }
 
 export function DeleteUserForm({ user, returnRole }) {
-  const [state, action, pending] = useAdminForm(deleteUserAction);
+  const [state, action, pending] = useActionForm(deleteUserAction);
   const fieldId = "delete-user-" + user.id;
   return <details className="mt-5 text-sm">
     <summary className="w-fit cursor-pointer font-semibold text-red-900">Hapus pengguna</summary>
@@ -72,7 +64,7 @@ export function DeleteUserForm({ user, returnRole }) {
 }
 
 export function CuratorDecisionForm({ id, decision }) {
-  const [state, action, pending] = useAdminForm(verifyCuratorAction);
+  const [state, action, pending] = useActionForm(verifyCuratorAction);
   const rejected = decision === "rejected";
   const form = <form action={action} className="space-y-4" aria-busy={pending}>
     <input type="hidden" name="id" value={id} /><input type="hidden" name="decision" value={decision} />

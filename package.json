@@ -12,7 +12,8 @@
     "auth:secret": "node scripts/setup-session.mjs",
     "auth:test": "node --conditions=react-server scripts/test-auth.mjs",
     "auth:token-test": "node --conditions=react-server scripts/test-session-token.mjs",
-    "admin:test": "node --conditions=react-server scripts/test-admin.mjs"
+    "admin:test": "node --conditions=react-server scripts/test-admin.mjs",
+    "artwork:test": "node --conditions=react-server scripts/test-artworks.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -21,7 +22,8 @@
     "pg": "^8.23.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

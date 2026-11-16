@@ -1,66 +1,64 @@
 import Image from "next/image";
+import Link from "next/link";
 import SiteHeader from "@/components/site-header";
+import ArtworkCard from "@/components/artwork-card";
+import GalleryPagination from "@/components/gallery-pagination";
 import { query } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
+import { getGallery } from "@/lib/artworks";
+import { galleryFilters } from "@/lib/artwork-rules";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  let statistics = null;
-  let artworks = [];
+export default async function Home({ searchParams }) {
+  const params = await searchParams;
+  const user = await getCurrentUser();
+  const filters = galleryFilters(params);
+  const filtered = Boolean(params.q || params.category || params.sort || params.page);
+  let categories = [], gallery = null, popular = [], latest = [], problem = "";
   try {
-    statistics = (await query("platform")).rows[0];
-    artworks = (await query("preview", [3])).rows;
+    categories = (await query("artworkCategories")).rows;
+    if (filters.categoryId && !categories.some((category) => category.id === filters.categoryId)) filters.error = "Kategori yang dipilih sudah tidak tersedia.";
+    if (!filters.error) {
+      if (filtered) gallery = await getGallery(filters);
+      else {
+        const lists = await Promise.all([getGallery({ sort: "popular", pageSize: 6 }), getGallery({ pageSize: 6 })]);
+        popular = lists[0].artworks; latest = lists[1].artworks;
+      }
+    }
   } catch (error) {
-    console.error("Ringkasan belum tersedia:", error.code || "DB_CONFIG");
+    console.error("Galeri belum tersedia:", error.code || "GALLERY_ERROR");
+    problem = "Galeri belum dapat dimuat. Coba kembali beberapa saat lagi.";
   }
-
-  return (
-    <div className="mx-auto max-w-6xl px-5 sm:px-9">
-      <SiteHeader />
-      <main id="konten" className="pb-20">
-        <section className="grid gap-10 py-14 md:grid-cols-[1.3fr_1fr] md:py-20">
-          <div>
-            <p className="mb-5 text-xs font-semibold tracking-[0.22em] text-orange-800">ART SHOWCASE PLATFORM</p>
-            <h1 className="max-w-xl font-serif text-5xl leading-[1.1] sm:text-6xl">Setiap karya punya ruang untuk bercerita.</h1>
-            <p className="mt-6 max-w-md leading-7 text-stone-600">Tempat kreator membagikan sudut pandang, menemukan inspirasi, dan bertemu lewat tantangan kreatif.</p>
-            <a href="#fondasi" className="mt-8 inline-block border-b border-stone-700 pb-1 text-sm font-semibold text-stone-800">Lihat fondasi platform ↓</a>
-          </div>
-          <div className="relative min-h-72 overflow-hidden rounded-t-full bg-[#e6dac7] md:min-h-96">
-            <Image src="/examples/art-01.svg" alt="Ilustrasi contoh bentuk matahari dan lanskap berwarna tanah" fill priority className="object-cover" unoptimized />
-          </div>
-        </section>
-        <section id="fondasi" aria-labelledby="status-title" className="border-y border-stone-300 py-8">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div><p className="text-xs tracking-widest text-stone-500">TAHAP 01 / FONDASI</p><h2 id="status-title" className="mt-2 font-serif text-2xl">Ruangnya sudah disiapkan.</h2></div>
-            <span className="rounded-full bg-stone-200 px-4 py-2 text-xs text-stone-700">{statistics ? "Database terhubung" : "Database belum terhubung"}</span>
-          </div>
-          {statistics ? (
-            <dl className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-              {[[statistics.members, "Kreator"], [statistics.artworks, "Karya contoh"], [statistics.curators, "Kurator"], [statistics.active_challenges, "Challenge aktif"]].map(([value, label]) => (
-                <div key={label}><dt className="text-sm text-stone-600">{label}</dt><dd className="mt-1 text-3xl font-semibold">{value}</dd></div>
-              ))}
-            </dl>
-          ) : (
-            <p role="status" className="mt-6 max-w-2xl rounded-xl bg-white p-5 leading-7 text-stone-600">Data belum dapat dimuat. Pastikan PostgreSQL berjalan, konfigurasi lokal sudah diisi, serta schema.sql dan seed.sql sudah dijalankan. Setelah itu, muat ulang halaman.</p>
-          )}
-        </section>
-        <section className="pt-10" aria-labelledby="sample-title">
-          <h2 id="sample-title" className="font-serif text-2xl">Sekilas dari ruang kreatif</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">Contoh data untuk menguji fondasi. Galeri lengkap dan interaksi dibuat pada tahap berikutnya.</p>
-          {artworks.length ? (
-            <div className="mt-6 grid gap-7 sm:grid-cols-3">
-              {artworks.map((art) => (
-                <article key={art.id}>
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-stone-200"><Image src={art.file_path} alt={art.title} fill className="object-cover" unoptimized /></div>
-                  <p className="mt-4 text-xs text-stone-500">{art.category}</p><h3 className="mt-1 font-semibold">{art.title}</h3><p className="mt-1 text-sm text-stone-600">{art.display_name}</p>
-                </article>
-              ))}
-            </div>
-          ) : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-7 text-sm text-stone-600">Belum ada karya yang bisa ditampilkan.</p>}
-        </section>
-      </main>
-      <footer className="border-t border-stone-300 py-6 text-xs leading-6 text-stone-500">Ruang Karya · Praktikum Pemrograman Web 2026 · Sistem Informasi, Universitas Hasanuddin</footer>
-    </div>
-  );
+  return <div className="mx-auto max-w-6xl px-5 sm:px-9">
+    <SiteHeader user={user} />
+    <main id="konten" className="pb-16">
+      <section className="grid items-center gap-10 py-12 md:grid-cols-[1.25fr_1fr] md:py-16">
+        <div><p className="text-xs font-semibold tracking-[0.22em] text-orange-800">SENI DAN SUDUT PANDANG</p><h1 className="mt-5 max-w-xl font-serif text-5xl leading-[1.12] sm:text-6xl">Setiap karya punya ruang untuk bercerita.</h1><p className="mt-6 max-w-lg leading-7 text-stone-600">Temukan ilustrasi, fotografi, dan desain dari kreator dengan cerita yang berbeda.</p><div className="mt-8 flex flex-wrap gap-4"><a href="#galeri" className="rounded-lg border border-stone-400 px-5 py-3 text-sm font-semibold text-stone-800">Jelajahi karya</a>{user?.role === "member" ? <Link href="/dashboard/member/artworks/new" className="rounded-lg bg-stone-800 px-5 py-3 text-sm font-semibold text-white hover:text-white">Unggah karya</Link> : !user && <Link href="/register" className="rounded-lg bg-stone-800 px-5 py-3 text-sm font-semibold text-white hover:text-white">Mulai berkarya</Link>}</div></div>
+        <div className="relative min-h-72 overflow-hidden rounded-t-full bg-[#e6dac7] md:min-h-96"><Image src="/examples/art-01.svg" alt="Ilustrasi lanskap dengan palet warna tanah" fill priority unoptimized className="object-cover" /></div>
+      </section>
+      <section id="galeri" aria-labelledby="gallery-title" className="border-t border-stone-300 pt-8">
+        <h2 id="gallery-title" className="font-serif text-3xl">Temukan inspirasi.</h2>
+        <form action="/" method="get" className="mt-6 grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_11rem_11rem_auto]">
+          <div className="min-w-0"><label htmlFor="gallery-search" className="block text-sm font-semibold">Cari karya atau kreator</label><input id="gallery-search" name="q" type="search" maxLength={100} defaultValue={filters.q} placeholder="Judul karya atau nama kreator" className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm" /></div>
+          <div><label htmlFor="gallery-category" className="block text-sm font-semibold">Kategori</label><select id="gallery-category" name="category" defaultValue={filters.categoryId || ""} className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-3 text-sm"><option value="">Semua kategori</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></div>
+          <div><label htmlFor="gallery-sort" className="block text-sm font-semibold">Urutan</label><select id="gallery-sort" name="sort" defaultValue={filters.sort} className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-3 text-sm"><option value="latest">Terbaru</option><option value="popular">Terpopuler</option></select></div>
+          <button className="rounded-lg bg-stone-800 px-5 py-3 text-sm font-semibold text-white">Cari karya</button>
+        </form>
+        {filtered && <Link href="/#galeri" className="mt-4 inline-block text-sm font-semibold text-stone-700 underline underline-offset-4">Reset pencarian</Link>}
+        {(problem || filters.error) ? <p role="alert" className="mt-7 rounded-xl border border-stone-300 bg-white p-6 leading-7 text-stone-600">{problem || filters.error}</p> : filtered ? <>
+          <p className="mt-8 text-sm text-stone-600">{gallery?.total || 0} karya ditemukan</p>
+          {gallery?.artworks.length ? <div className="mt-6 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{gallery.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-8 leading-7 text-stone-600">Belum ada karya yang cocok. Coba kata kunci atau kategori lain.</p>}
+          {gallery && <GalleryPagination gallery={gallery} filters={filters} anchor="#galeri" />}
+        </> : <div className="space-y-14 pt-10">
+          {[["Karya populer", "Sudut pandang yang disukai komunitas.", popular], ["Baru dibagikan", "Cerita visual terbaru dari para kreator.", latest]].map(([title, subtitle, artworks]) => <section key={title} aria-label={title}>
+            <h3 className="font-serif text-3xl">{title}</h3><p className="mt-2 text-sm text-stone-600">{subtitle}</p>
+            {artworks.length ? <div className="mt-6 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-8 text-stone-600">Belum ada karya yang dibagikan. Jadilah bagian dari cerita pertama.</p>}
+          </section>)}
+        </div>}
+      </section>
+    </main>
+    <footer className="border-t border-stone-300 py-6 text-xs leading-6 text-stone-500">Ruang Karya · Praktikum Pemrograman Web 2026 · Sistem Informasi, Universitas Hasanuddin</footer>
+  </div>;
 }
 
