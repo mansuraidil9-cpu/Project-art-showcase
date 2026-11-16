@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 2 — autentikasi**. Register Member/Curator, login, logout, sesi cookie, proteksi dashboard, serta halaman status dan penghapusan Curator ditolak sudah tersedia. Modul karya, Admin, dan challenge mengikuti tahap berikutnya.
+Tahap saat ini: **Hari 3 — layout dan modul Admin**. Autentikasi, navigasi per peran, CRUD kategori, daftar/hapus pengguna, dan verifikasi Curator sudah tersedia. Statistik/moderasi, karya, profil, interaksi, dan challenge mengikuti tahap berikutnya.
 
 ## Teknologi
 
@@ -40,6 +40,8 @@ npm run auth:secret
 Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-auth.sql**. Migrasi menambah sessions dan auth_limits tanpa menghapus data Hari 1, serta aman dijalankan ulang. Untuk instalasi dari nol, gunakan schema.sql dan seed.sql seperti di bawah.
 
 ## Database di pgAdmin
+
+Hari 3 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -89,11 +91,30 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - database/queries/: semua query yang dipakai aplikasi.
 - database/tests/: SQL pengujian yang tidak menyimpan perubahan.
 - scripts/check-db.mjs: pemeriksaan koneksi.
+- scripts/test-admin.mjs: pengujian aturan Admin dengan akun/data uji sementara.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi unggahan mendatang; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
 
 Panduan autentikasi dan bahan tanya jawab tersedia di docs/autentikasi.md. Hasil pengujian tahap ini ada di docs/verifikasi-hari-2.md.
+
+Panduan modul Admin tersedia di docs/admin.md dan hasil pengujiannya di docs/verifikasi-hari-3.md.
+
+## Mencoba modul Admin
+
+Masuk di /login sebagai admin@ruangkarya.test, password RuangKarya2026!. Menu Admin menyediakan kategori, pengguna, dan verifikasi Curator.
+
+- Kategori: tambah nama baru, coba nama yang hanya berbeda kapitalisasi, lalu edit atau hapus kategori yang belum dipakai karya.
+- Pengguna: pilih filter peran dan coba hapus akun uji Member/Curator dengan mengetik ulang emailnya. Akun Admin dilindungi.
+- Verifikasi: daftarkan akun Curator uji melalui /register, lalu setujui atau tolak dari akun Admin. Penolakan wajib disertai alasan.
+
+Jalankan database/check-admin.sql melalui ikon folder Query Tool untuk memeriksa hasil perubahan. File tersebut berisi query baca saja.
+
+```powershell
+npm run admin:test
+```
+
+Pengujian ini membuat akun dan data sementara pada database pengembangan, lalu membersihkannya. Akun seed dan data pribadi yang sudah ada tetap dipertahankan. Pengujian mencakup akses non-Admin, perlindungan Admin, kategori terpakai, verifikasi bersamaan, penghapusan relasi, serta pembersihan berkas unggahan.
 
 ## Query dan transaksi
 
