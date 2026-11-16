@@ -8,7 +8,7 @@ import { MemberError } from "@/lib/member";
 import { UploadError } from "@/lib/uploads";
 import { setInteraction, addComment, deleteComment, reportArtwork } from "@/lib/interactions";
 import { updateProfile, changeEmail, changePassword } from "@/lib/profile";
-import { textField } from "@/lib/validation";
+import { parseId, textField } from "@/lib/validation";
 
 async function memberToken() {
   await requireUser({ roles: ["member"] });
@@ -28,6 +28,13 @@ export async function interactionAction(previous, form) {
     const result = await setInteraction(token, textField(form, "artworkId"), textField(form, "kind"), textField(form, "enabled"));
     return saved("/artworks/" + result.artworkId + "?notice=interaction");
   } catch (error) { return failure(error); }
+}
+export async function removeFavoriteAction(previous, form) {
+  const token = await memberToken();
+  try { await setInteraction(token, textField(form, "artworkId"), "favorite", "no"); }
+  catch (error) { return failure(error); }
+  const page = parseId(textField(form, "page")) || 1;
+  return saved("/dashboard/member/favorites?notice=removed&page=" + page);
 }
 export async function commentAction(previous, form) {
   const token = await memberToken();

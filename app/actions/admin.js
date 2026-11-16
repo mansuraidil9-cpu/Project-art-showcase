@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { requireUser } from "@/lib/auth";
 import { SESSION_COOKIE } from "@/lib/session-token";
-import { AdminError, createCategory, updateCategory, deleteCategory, deleteUser, verifyCurator } from "@/lib/admin";
+import { AdminError, createCategory, updateCategory, deleteCategory, deleteUser, verifyCurator, dismissReport, takeDownArtwork } from "@/lib/admin";
 import { removeUploads } from "@/lib/uploads";
 import { textField } from "@/lib/validation";
 
@@ -62,5 +62,22 @@ export async function verifyCuratorAction(previous, form) {
     await verifyCurator(token, textField(form, "id"), decision, values.reason);
   } catch (error) { return actionError(error, values); }
   return saved("/dashboard/admin/curators?notice=" + decision);
+}
+
+export async function dismissReportAction(previous, form) {
+  const token = await adminToken();
+  let report;
+  try { report = await dismissReport(token, textField(form, "reportId")); }
+  catch (error) { return actionError(error); }
+  return saved("/dashboard/admin/moderation/" + report.artwork_id + "?notice=dismissed");
+}
+
+export async function takeDownArtworkAction(previous, form) {
+  const token = await adminToken();
+  let artwork;
+  try { artwork = await takeDownArtwork(token, textField(form, "artworkId"), textField(form, "confirmation")); }
+  catch (error) { return actionError(error); }
+  const failed = await removeUploads([artwork.file_path]);
+  return saved("/dashboard/admin/moderation?notice=" + (failed ? "taken-down-files" : "taken-down"));
 }
 

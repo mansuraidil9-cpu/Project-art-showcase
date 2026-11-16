@@ -12,7 +12,8 @@ export default function DashboardNav({ role }) {
     [root + "/categories", "Kategori"],
     [root + "/users", "Pengguna"],
     [root + "/curators", "Verifikasi Curator"],
-  ] : role === "member" ? [[root, "Ringkasan"], [root + "/artworks", "Karya Saya"], [root + "/artworks/new", "Unggah Karya"], [root + "/profile", "Profil Publik"], [root + "/account", "Akun Privat"]] : [[root, "Dashboard " + roleNames[role]]];
+    [root + "/moderation", "Moderasi Konten"],
+  ] : role === "member" ? [[root, "Ringkasan"], [root + "/artworks", "Karya Saya"], [root + "/artworks/new", "Unggah Karya"], [root + "/favorites", "Favorit Saya"], [root + "/profile", "Profil Publik"], [root + "/account", "Akun Privat"]] : [[root, "Dashboard " + roleNames[role]]];
   return <nav aria-label={"Menu " + roleNames[role]} className="flex flex-wrap gap-2 border-b border-stone-300 py-5">
     {items.map(([href, label]) => {
       const selected = href === root ? pathname === root : href.endsWith("/artworks")
