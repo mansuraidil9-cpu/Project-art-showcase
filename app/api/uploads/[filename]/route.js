@@ -4,6 +4,7 @@ import { MAX_IMAGE_BYTES } from "@/lib/artwork-rules";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Rewrite /uploads melewati daftar file statis yang dipindai saat server mulai.
 const filenamePattern = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}\.webp$/i;
 const notFound = () => new Response("Gambar tidak ditemukan.", { status: 404, headers: { "Cache-Control": "no-store" } });
 
