@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 3 — layout dan modul Admin**. Autentikasi, navigasi per peran, CRUD kategori, daftar/hapus pengguna, dan verifikasi Curator sudah tersedia. Statistik/moderasi, karya, profil, interaksi, dan challenge mengikuti tahap berikutnya.
+Tahap saat ini: **Hari 4 — karya dan galeri**. Upload/CRUD karya Member, tags, galeri populer/terbaru, pencarian, filter kategori, detail karya, dan profil kreator baca saja sudah tersedia. Pengaturan profil/interaksi, statistik/moderasi, dan challenge mengikuti tahap berikutnya.
 
 ## Teknologi
 
@@ -92,6 +92,7 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - database/tests/: SQL pengujian yang tidak menyimpan perubahan.
 - scripts/check-db.mjs: pemeriksaan koneksi.
 - scripts/test-admin.mjs: pengujian aturan Admin dengan akun/data uji sementara.
+- scripts/test-artworks.mjs: pengujian upload, kepemilikan, tags, dan galeri.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi unggahan mendatang; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
@@ -99,6 +100,27 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 Panduan autentikasi dan bahan tanya jawab tersedia di docs/autentikasi.md. Hasil pengujian tahap ini ada di docs/verifikasi-hari-2.md.
 
 Panduan modul Admin tersedia di docs/admin.md dan hasil pengujiannya di docs/verifikasi-hari-3.md.
+
+Panduan karya tersedia di docs/karya.md dan hasil pemeriksaannya di docs/verifikasi-hari-4.md.
+
+## Mencoba karya dan galeri
+
+Hari 4 menambah dependency sharp untuk memeriksa dan memproses gambar. Setelah git pull --ff-only, jalankan npm ci pada folder proyek lalu mulai ulang server. Tidak ada migrasi SQL tambahan; skema tetap 14 tabel.
+
+1. Masuk sebagai Member, misalnya nadia@ruangkarya.test dengan password contoh.
+2. Buka Karya Saya > Unggah Karya. Lengkapi judul, deskripsi, kategori, dan tags.
+3. Pilih JPEG, PNG, atau WebP statis, maksimal 5 MB serta 20 megapiksel.
+4. Setelah berhasil, buka detail dan coba edit metadata. File karya tetap.
+5. Kunjungi beranda untuk mencoba pencarian berdasarkan judul/kreator, kategori, dan urutan populer.
+6. Di pgAdmin, buka database/check-artworks.sql melalui ikon folder Query Tool untuk melihat metadata dan tags.
+
+```powershell
+npm run artwork:test
+```
+
+Pengujian ini memakai akun/data sementara, memeriksa gambar palsu dan batas ukuran, serta memastikan rollback membersihkan berkas baru. Jalankan pada database pengembangan yang sudah diisi schema dan seed.
+
+File unggahan tersimpan di public/uploads pada komputer yang menjalankan server, dan tidak masuk Git. Untuk memindahkan data pribadi ke komputer lain, salin database dan folder uploads secara terpisah. Data seed memakai gambar public/examples yang sudah disertakan dalam repository.
 
 ## Mencoba modul Admin
 
