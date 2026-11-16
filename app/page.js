@@ -7,6 +7,8 @@ import { query } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { getGallery } from "@/lib/artworks";
 import { galleryFilters } from "@/lib/artwork-rules";
+import ChallengeCard from "@/components/challenge-card";
+import { getChallenges } from "@/lib/challenges";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +18,7 @@ export default async function Home({ searchParams }) {
   const filters = galleryFilters(params);
   const filtered = Boolean(params.q || params.category || params.sort || params.page);
   let categories = [], gallery = null, popular = [], latest = [], problem = "";
+  let challenges = null, challengeProblem = "";
   try {
     categories = (await query("artworkCategories")).rows;
     if (filters.categoryId && !categories.some((category) => category.id === filters.categoryId)) filters.error = "Kategori yang dipilih sudah tidak tersedia.";
@@ -29,6 +32,13 @@ export default async function Home({ searchParams }) {
   } catch (error) {
     console.error("Galeri belum tersedia:", error.code || "GALLERY_ERROR");
     problem = "Galeri belum dapat dimuat. Coba kembali beberapa saat lagi.";
+  }
+  try {
+    if (filters.q.length > 100) challengeProblem = "Pencarian maksimal 100 karakter.";
+    else challenges = await getChallenges({ q: filters.q, status: filters.q ? "all" : "active", pageSize: 3 });
+  } catch (error) {
+    console.error("Challenge belum tersedia:", error.code || "CHALLENGE_ERROR");
+    challengeProblem = "Challenge belum dapat dimuat. Coba kembali beberapa saat lagi.";
   }
   return <div className="mx-auto max-w-6xl px-5 sm:px-9">
     <SiteHeader user={user} />
@@ -45,6 +55,7 @@ export default async function Home({ searchParams }) {
           <div><label htmlFor="gallery-sort" className="block text-sm font-semibold">Urutan</label><select id="gallery-sort" name="sort" defaultValue={filters.sort} className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-3 text-sm"><option value="latest">Terbaru</option><option value="popular">Terpopuler</option></select></div>
           <button className="rounded-lg bg-stone-800 px-5 py-3 text-sm font-semibold text-white">Cari karya</button>
         </form>
+        <p className="mt-3 text-xs leading-6 text-stone-500">Pencarian juga mencari judul challenge dan nama Curator. Filter kategori berlaku untuk karya.</p>
         {filtered && <Link href="/#galeri" className="mt-4 inline-block text-sm font-semibold text-stone-700 underline underline-offset-4">Reset pencarian</Link>}
         {(problem || filters.error) ? <p role="alert" className="mt-7 rounded-xl border border-stone-300 bg-white p-6 leading-7 text-stone-600">{problem || filters.error}</p> : filtered ? <>
           <p className="mt-8 text-sm text-stone-600">{gallery?.total || 0} karya ditemukan</p>
@@ -57,6 +68,7 @@ export default async function Home({ searchParams }) {
           </section>)}
         </div>}
       </section>
+      <section id="challenge" className="mt-14 border-t border-stone-300 pt-8" aria-labelledby="home-challenges-title"><div className="flex flex-wrap items-center justify-between gap-4"><h2 id="home-challenges-title" className="font-serif text-3xl">{filters.q ? "Hasil pencarian challenge" : "Challenge yang sedang berlangsung"}</h2><Link href={"/challenges?" + new URLSearchParams({ q: filters.q, status: filters.q ? "all" : "active" })} className="text-sm font-semibold text-stone-800 underline underline-offset-4">Lihat semua challenge</Link></div>{challengeProblem ? <p role="alert" className="mt-6 rounded-xl border border-stone-300 bg-white p-6 text-sm leading-7 text-stone-600">{challengeProblem}</p> : challenges?.challenges.length ? <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{challenges.challenges.map((challenge) => <ChallengeCard key={challenge.id} challenge={challenge} />)}</div> : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-7 leading-7 text-stone-600">{filters.q ? "Belum ada challenge yang cocok dengan pencarianmu." : "Belum ada challenge yang sedang berlangsung. Kunjungi daftar challenge untuk melihat jadwal berikutnya."}</p>}</section>
     </main>
     <footer className="border-t border-stone-300 py-6 text-xs leading-6 text-stone-500">Ruang Karya · Praktikum Pemrograman Web 2026 · Sistem Informasi, Universitas Hasanuddin</footer>
   </div>;

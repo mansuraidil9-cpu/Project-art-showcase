@@ -1,0 +1,1 @@
+export default function Loading() { return <div role="status" className="mx-auto max-w-6xl animate-pulse space-y-6 px-5 py-14"><p className="text-sm text-stone-600">Menyiapkan challenge...</p><div className="h-48 rounded-xl bg-stone-200" /><div className="h-10 max-w-sm rounded-lg bg-stone-200" /></div>; }

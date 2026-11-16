@@ -8,6 +8,7 @@ export default async function AuthLinks({ user: suppliedUser } = {}) {
   const user = suppliedUser === undefined ? await getCurrentUser() : suppliedUser;
   return <nav aria-label="Navigasi akun" className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm">
     <Link href="/" className="font-semibold text-stone-800">Beranda</Link>
+    <Link href="/challenges" className="font-semibold text-stone-800">Challenge</Link>
     {user ? <>
       <Link href={userDestination(user)} className="font-semibold text-stone-800">{user.role === "curator" && user.curator_status !== "approved" ? "Status Curator" : "Dashboard " + roleNames[user.role]}</Link>
       <span className="max-w-40 break-words text-stone-600">{user.display_name}</span>

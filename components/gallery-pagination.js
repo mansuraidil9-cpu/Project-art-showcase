@@ -7,6 +7,7 @@ export default function GalleryPagination({ gallery, pathname = "/", filters = {
     if (filters.q) params.set("q", filters.q);
     if (filters.categoryId) params.set("category", String(filters.categoryId));
     if (filters.sort) params.set("sort", filters.sort);
+    if (filters.status) params.set("status", filters.status);
     params.set("page", String(page));
     return pathname + "?" + params.toString() + anchor;
   }

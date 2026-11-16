@@ -1,0 +1,1 @@
+export default function Loading() { return <section role="status" className="animate-pulse space-y-5"><p className="text-sm text-stone-600">Menyiapkan ruang kurasi...</p><div className="h-10 max-w-sm rounded-lg bg-stone-200" /><div className="h-48 rounded-xl bg-stone-200" /></section>; }
