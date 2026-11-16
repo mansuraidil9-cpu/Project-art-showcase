@@ -31,6 +31,7 @@ Dijalankan 16 November 2026 WITA pada Linux cloud, Node.js 24.22.1, PostgreSQL 1
 | Hapus Curator rejected dengan konfirmasi benar | Akun dan sesinya dihapus |
 | Pembatasan 10 percobaan login | Diberlakukan |
 | Form pada 320, 390, 768, 1366 px | Tanpa overflow horizontal |
+| Tautan Beranda pada dashboard Member/Admin/Curator | Berfungsi pada 320 dan 1366 px, sesi tetap aktif |
 | Error JavaScript browser | Tidak ditemukan |
 
 Pengujian otomatis sesi juga memeriksa rollback pendaftaran beserta sesi, bcrypt.compare, penghapusan sesi melalui CASCADE, dan UPSERT counter dengan 12 permintaan bersamaan. Akun uji dihapus setelah pemeriksaan; akun seed dipertahankan.
