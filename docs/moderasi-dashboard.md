@@ -33,7 +33,7 @@ Dashboard Admin menampilkan jumlah Admin, Member, Curator, karya, laporan pendin
 
 Challenge aktif memenuhi starts_at <= now() dan ends_at > now(). Challenge yang belum mulai atau sudah berakhir tidak dihitung. Kolom timestamptz menyimpan waktu secara konsisten; tampilan tanggal memakai WITA.
 
-Dashboard Member menampilkan jumlah karya miliknya, suka pada karyanya, dan favorit yang ia simpan. Tiga karya terbarunya ditampilkan bersama tautan ke pengelolaan karya, favorit, profil publik, dan akun privat. Fitur challenge serta halaman My Submissions mengikuti tahap berikutnya.
+Dashboard Member menampilkan jumlah karya miliknya, suka pada karyanya, dan favorit yang ia simpan. Tiga karya terbarunya ditampilkan bersama tautan ke pengelolaan karya, favorit, profil publik, dan akun privat. Fitur challenge Hari 7 dijelaskan di docs/challenge.md; My Submissions dilanjutkan pada Hari 8.
 
 ## Favorit privat
 

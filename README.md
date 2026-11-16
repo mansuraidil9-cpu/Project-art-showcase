@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 6 — moderasi dan dashboard**. Statistik Admin, antrean moderasi dengan dismiss/take down, daftar Favorit Saya, dan ringkasan dashboard Member sudah tersedia. Fitur challenge dilanjutkan pada Hari 7–8.
+Tahap saat ini: **Hari 7 — challenge bagian pertama**. CRUD challenge Curator, daftar/detail publik, challenge di beranda, submit satu karya, dan withdraw dengan validasi waktu backend sudah tersedia. Pengelolaan submisi/pemenang, My Submissions, dan featured dilanjutkan pada Hari 8.
 
 ## Teknologi
 
@@ -41,7 +41,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3–6 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–7 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -95,6 +95,7 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - scripts/test-artworks.mjs: pengujian upload, kepemilikan, tags, dan galeri.
 - scripts/test-member.mjs: pengujian interaksi, laporan unik, profil/foto, dan perubahan akun privat.
 - scripts/test-moderation.mjs: pengujian statistik, keputusan moderasi, penghapusan relasi, dan favorit privat.
+- scripts/test-challenges.mjs: pengujian challenge, zona waktu, kepemilikan, submisi unik, dan deadline setelah antrean kunci.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi karya dan foto profil unggahan; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
@@ -108,6 +109,33 @@ Panduan karya tersedia di docs/karya.md dan hasil pemeriksaannya di docs/verifik
 Panduan interaksi dan pengaturan akun tersedia di docs/member.md, dengan hasil pemeriksaan di docs/verifikasi-hari-5.md.
 
 Panduan moderasi dan dashboard tersedia di docs/moderasi-dashboard.md, dengan hasil pemeriksaan di docs/verifikasi-hari-6.md.
+
+Panduan challenge tersedia di docs/challenge.md, dengan hasil pemeriksaan di docs/verifikasi-hari-7.md.
+
+## Mencoba challenge
+
+Hentikan server lama dengan Ctrl+C, lalu jalankan dari folder proyek di PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm run challenge:test
+npm run build
+npm run dev
+```
+
+Tidak ada migrasi tambahan atau seed ulang. Akun dan data yang sudah ada tetap dipakai.
+
+1. Masuk sebagai Curator approved, misalnya kurator@ruangkarya.test dengan password contoh.
+2. Di dashboard, pilih Buat Challenge. Lengkapi judul, deskripsi, aturan, hadiah, jadwal WITA, dan banner maksimal 5 MB.
+3. Jadwal harus selesai setelah mulai. Untuk menguji submit, pilih mulai sebelum waktu saat ini dan selesai setelah waktu saat ini.
+4. Buka detail publik atau edit kembali challenge. Banner bisa diganti; Curator lain tidak boleh mengelolanya.
+5. Keluar dan masuk sebagai Member yang sudah memiliki karya. Buka challenge aktif lalu pilih satu karya dari portofolio.
+6. Setelah submit, tombol Tarik Submisi tersedia sebelum challenge berakhir. Tarik lalu kirim karya lain jika ingin mengganti pilihan.
+7. Buka beranda untuk melihat challenge aktif atau gunakan pencarian. Menu Challenge menyediakan filter aktif, mendatang, dan selesai.
+8. Di pgAdmin, pilih art_showcase > Query Tool > ikon folder > buka database/check-challenges.sql > F5. Dua query terakhir harus kosong karena mencari pelanggaran submisi unik dan kepemilikan.
+
+challenge:test membuat akun, challenge, karya, dan banner sementara lalu membersihkannya. Tes juga menahan kunci database sampai deadline lewat untuk memastikan request yang mengantre ditolak. Jalankan pada database pengembangan yang sudah berisi schema dan seed.
 
 ## Mencoba moderasi dan dashboard
 

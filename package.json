@@ -15,7 +15,8 @@
     "admin:test": "node --conditions=react-server scripts/test-admin.mjs",
     "artwork:test": "node --conditions=react-server scripts/test-artworks.mjs",
     "member:test": "node --conditions=react-server scripts/test-member.mjs",
-    "moderation:test": "node --conditions=react-server scripts/test-moderation.mjs"
+    "moderation:test": "node --conditions=react-server scripts/test-moderation.mjs",
+    "challenge:test": "node --conditions=react-server scripts/test-challenges.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
