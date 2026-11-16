@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 4 — karya dan galeri**. Upload/CRUD karya Member, tags, galeri populer/terbaru, pencarian, filter kategori, detail karya, dan profil kreator baca saja sudah tersedia. Pengaturan profil/interaksi, statistik/moderasi, dan challenge mengikuti tahap berikutnya.
+Tahap saat ini: **Hari 5 — interaksi dan profil**. Karya/galeri, like, favorit, komentar, laporan karya, profil publik, dan pengaturan email/password sudah tersedia. Statistik/moderasi, daftar My Favorites, dan challenge mengikuti tahap berikutnya.
 
 ## Teknologi
 
@@ -41,7 +41,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–5 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -93,8 +93,9 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - scripts/check-db.mjs: pemeriksaan koneksi.
 - scripts/test-admin.mjs: pengujian aturan Admin dengan akun/data uji sementara.
 - scripts/test-artworks.mjs: pengujian upload, kepemilikan, tags, dan galeri.
+- scripts/test-member.mjs: pengujian interaksi, laporan unik, profil/foto, dan perubahan akun privat.
 - public/examples/: ilustrasi seed.
-- public/uploads/: lokasi unggahan mendatang; isinya tidak masuk Git.
+- public/uploads/: lokasi karya dan foto profil unggahan; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
 
 Panduan autentikasi dan bahan tanya jawab tersedia di docs/autentikasi.md. Hasil pengujian tahap ini ada di docs/verifikasi-hari-2.md.
@@ -102,6 +103,34 @@ Panduan autentikasi dan bahan tanya jawab tersedia di docs/autentikasi.md. Hasil
 Panduan modul Admin tersedia di docs/admin.md dan hasil pengujiannya di docs/verifikasi-hari-3.md.
 
 Panduan karya tersedia di docs/karya.md dan hasil pemeriksaannya di docs/verifikasi-hari-4.md.
+
+Panduan interaksi dan pengaturan akun tersedia di docs/member.md, dengan hasil pemeriksaan di docs/verifikasi-hari-5.md.
+
+## Mencoba interaksi dan profil
+
+Perbarui kode dari folder Project-art-showcase di PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm run member:test
+npm run build
+npm run dev
+```
+
+Jika server lama berjalan, hentikan dahulu dengan Ctrl+C. Tidak perlu menyalin ulang .env.local, menjalankan seed, atau membuat ulang akunmu.
+
+1. Masuk sebagai Member. Buka detail karya kreator lain dari beranda.
+2. Coba Suka/Batalkan suka, Simpan ke favorit/Hapus dari favorit, dan kirim komentar. Hapus komentar milikmu sendiri.
+3. Buka Laporkan karya, isi alasan serta penjelasan. Laporan kedua untuk karya yang sama ditolak; karya sendiri tidak dapat dilaporkan.
+4. Buka dashboard > Profil Publik. Ubah nama, bio, tautan, dan foto JPEG/PNG/WebP maksimal 2 MB.
+5. Buka Lihat profil publik untuk memeriksa hasilnya. Email tidak ditampilkan di sana.
+6. Di Akun Privat, uji perubahan email/password dengan akun percobaan. Password saat ini wajib cocok dan perubahan berhasil akan mengakhiri semua sesi.
+7. Di pgAdmin, pilih art_showcase > Query Tool > ikon folder, buka database/check-member.sql, lalu F5. File ini hanya membaca data dan tidak menampilkan hash password.
+
+member:test membuat akun, karya, kategori, dan foto sementara lalu membersihkannya. Akun contoh dan data pengguna tetap dipertahankan. Jalankan pada database pengembangan yang sudah diisi schema dan seed.
+
+Favorit sudah bisa disimpan/dibatalkan pada detail karya; halaman daftar My Favorites dijadwalkan Hari 6 bersama moderasi dan statistik Admin.
 
 ## Mencoba karya dan galeri
 
