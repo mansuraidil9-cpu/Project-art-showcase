@@ -1,0 +1,1 @@
+export default function Loading() { return <div role="status" className="animate-pulse space-y-6"><div className="h-10 max-w-xs rounded-lg bg-stone-200" /><div className="h-28 max-w-2xl rounded-xl bg-stone-200" /><p className="text-sm text-stone-600">Menyiapkan ruangmu...</p></div>; }
