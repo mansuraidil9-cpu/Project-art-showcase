@@ -12,7 +12,7 @@ Header bersama menyediakan Beranda, dashboard sesuai peran, nama akun, dan Kelua
 | /dashboard/admin/users | Daftar pengguna dengan filter peran dan paginasi |
 | /dashboard/admin/curators | Meninjau Curator Pending |
 
-Statistik platform dan moderasi laporan dikerjakan Hari 6. Ringkasan Hari 3 menyediakan tautan pengelolaan yang sudah berfungsi.
+Statistik platform dan moderasi laporan ditambahkan pada Hari 6. Penjelasan query, transaksi, serta alurnya tersedia di docs/moderasi-dashboard.md.
 
 ## Kategori
 

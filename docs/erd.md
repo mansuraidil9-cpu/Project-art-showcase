@@ -45,7 +45,7 @@ erDiagram
 - **Pemenang:** foreign key gabungan memastikan submisi berasal dari challenge yang sama. Rank hanya 1–3, unik per challenge; submission_id unik agar satu karya tidak memperoleh dua peringkat dalam challenge.
 - **Kategori:** indeks unik lower(name) mencegah Fotografi dan fotografi menjadi dua kategori. Kategori yang dipakai karya tidak dapat dihapus sebelum karya dipindahkan.
 - **Waktu:** timestamptz menyimpan momen absolut. Antarmuka nanti memakai Asia/Makassar (WITA). Aktif berarti starts_at <= now() dan now() < ends_at; pemilihan pemenang baru boleh saat now() > ends_at.
-- **Laporan:** dismissed tetap disimpan sehingga peserta tidak bisa melaporkan ulang karya sama. Take down menghapus karya dan relasi laporannya. Hari 6 menerapkan transaksi moderasi.
+- **Laporan:** dismissed tetap disimpan sehingga peserta tidak bisa melaporkan ulang karya sama. Take down menghapus karya dan relasi laporannya dalam transaksi moderasi; lihat docs/moderasi-dashboard.md.
 - **Penghapusan:** akun Member menghapus karya dan interaksinya melalui CASCADE; Curator menghapus challenge beserta submisinya. Penghapusan berkas fisik perlu ditangani aplikasi pada modul terkait. Admin tidak dapat dihapus lewat aplikasi; pengecekan peran dibuat Hari 3.
 - **File karya:** trigger menolak perubahan file_path dan media_type saat edit.
 - **Seed:** ON CONFLICT DO NOTHING menghindari duplikasi saat dijalankan ulang; seed tidak mengatur ulang perubahan pengguna atau menggeser waktu challenge lama. Semua contoh masuk dalam satu transaksi.

@@ -10,9 +10,9 @@
 | /dashboard/member/artworks | Portofolio sendiri dan penghapusan karya |
 | /dashboard/member/artworks/new | Unggah karya |
 | /dashboard/member/artworks/[id]/edit | Edit metadata karya sendiri |
-| /uploads/[filename] | Route handler untuk membaca WebP unggahan |
+| /uploads/[filename] | URL WebP unggahan; rewrite ke /api/uploads/[filename] |
 
-Pengaturan profil dan interaksi baru dikerjakan Hari 5. Jumlah suka dan komentar yang sudah tersimpan ditampilkan pada halaman publik. Halaman ini belum menyediakan tombol interaksi baru.
+Dokumen ini menjelaskan fondasi karya Hari 4. Pengaturan profil dan interaksi yang ditambahkan pada Hari 5 dijelaskan di docs/member.md.
 
 ## Validasi metadata
 
@@ -29,6 +29,8 @@ Pemeriksaan backend meliputi ukuran, ekstensi, MIME, signature awal berkas, lalu
 Gambar diputar mengikuti orientasi asal, metadata dibuang, dan hasil disimpan sebagai WebP kualitas 90. Nama berkas memakai randomUUID, sehingga nama asal tidak dipakai sebagai path. File berada di public/uploads dan diabaikan Git.
 
 Route handler uploads hanya menerima pola nama UUID WebP, membatasi ukuran saat membaca, serta mengirim Content-Type image/webp dan nosniff. Handler ini bersifat publik karena karya memang dapat dilihat Guest. Route tersedia agar gambar yang dibuat setelah server produksi berjalan tetap bisa dimuat.
+
+Sejak Hari 6, beforeFiles rewrite meneruskan /uploads/[filename] ke app/api/uploads/[filename]/route.js agar file yang sudah ada saat server mulai juga tetap dibaca langsung, termasuk ketika file tersebut dihapus. Lokasi penyimpanan tetap public/uploads.
 
 Enam SVG seed berada di public/examples dan merupakan berkas lokal tepercaya. SVG tersebut tidak menjadi format yang boleh diunggah pengguna.
 

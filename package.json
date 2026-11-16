@@ -14,7 +14,8 @@
     "auth:token-test": "node --conditions=react-server scripts/test-session-token.mjs",
     "admin:test": "node --conditions=react-server scripts/test-admin.mjs",
     "artwork:test": "node --conditions=react-server scripts/test-artworks.mjs",
-    "member:test": "node --conditions=react-server scripts/test-member.mjs"
+    "member:test": "node --conditions=react-server scripts/test-member.mjs",
+    "moderation:test": "node --conditions=react-server scripts/test-moderation.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

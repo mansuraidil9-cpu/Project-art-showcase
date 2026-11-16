@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 5 — interaksi dan profil**. Karya/galeri, like, favorit, komentar, laporan karya, profil publik, dan pengaturan email/password sudah tersedia. Statistik/moderasi, daftar My Favorites, dan challenge mengikuti tahap berikutnya.
+Tahap saat ini: **Hari 6 — moderasi dan dashboard**. Statistik Admin, antrean moderasi dengan dismiss/take down, daftar Favorit Saya, dan ringkasan dashboard Member sudah tersedia. Fitur challenge dilanjutkan pada Hari 7–8.
 
 ## Teknologi
 
@@ -41,7 +41,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3–5 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–6 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -94,6 +94,7 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - scripts/test-admin.mjs: pengujian aturan Admin dengan akun/data uji sementara.
 - scripts/test-artworks.mjs: pengujian upload, kepemilikan, tags, dan galeri.
 - scripts/test-member.mjs: pengujian interaksi, laporan unik, profil/foto, dan perubahan akun privat.
+- scripts/test-moderation.mjs: pengujian statistik, keputusan moderasi, penghapusan relasi, dan favorit privat.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi karya dan foto profil unggahan; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
@@ -105,6 +106,32 @@ Panduan modul Admin tersedia di docs/admin.md dan hasil pengujiannya di docs/ver
 Panduan karya tersedia di docs/karya.md dan hasil pemeriksaannya di docs/verifikasi-hari-4.md.
 
 Panduan interaksi dan pengaturan akun tersedia di docs/member.md, dengan hasil pemeriksaan di docs/verifikasi-hari-5.md.
+
+Panduan moderasi dan dashboard tersedia di docs/moderasi-dashboard.md, dengan hasil pemeriksaan di docs/verifikasi-hari-6.md.
+
+## Mencoba moderasi dan dashboard
+
+Hentikan server lama dengan Ctrl+C, lalu jalankan dari folder proyek di PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm run moderation:test
+npm run build
+npm run dev
+```
+
+Tidak ada migrasi tambahan. Akun dan data yang sudah ada tetap dipakai.
+
+1. Masuk sebagai Member, buka karya kreator lain, lalu simpan ke favorit. Lihat hasilnya pada Dashboard Member > Favorit Saya.
+2. Daftar favorit menyediakan tombol hapus dan paginasi. Penghapusan favorit tidak menghapus karya aslinya.
+3. Laporkan karya uji milik akun Member lain, kemudian keluar dan masuk sebagai Admin.
+4. Buka Ringkasan untuk melihat total akun per peran, karya, laporan menunggu, dan challenge aktif.
+5. Buka Moderasi Konten > Tinjau laporan. Abaikan laporan untuk mempertahankan karya, atau buka Hapus karya dan centang konfirmasi untuk menghapusnya.
+6. Uji penghapusan pada karya percobaan. Tindakan ini juga menghapus komentar, favorit, laporan, dan submisi/pemenang terkait.
+7. Di pgAdmin: pilih art_showcase > Query Tool > ikon folder > buka database/check-moderation.sql > F5. File ini hanya membaca statistik, antrean, audit laporan, dan favorit.
+
+moderation:test membuat akun/data sementara dan membersihkannya. Pengujian mencakup dua Admin bersamaan, rollback penghapusan berelasi, challenge aktif dibanding mendatang/berakhir, serta paginasi dan privasi favorit. Jalankan pada database pengembangan yang sudah berisi schema dan seed.
 
 ## Mencoba interaksi dan profil
 
@@ -130,7 +157,7 @@ Jika server lama berjalan, hentikan dahulu dengan Ctrl+C. Tidak perlu menyalin u
 
 member:test membuat akun, karya, kategori, dan foto sementara lalu membersihkannya. Akun contoh dan data pengguna tetap dipertahankan. Jalankan pada database pengembangan yang sudah diisi schema dan seed.
 
-Favorit sudah bisa disimpan/dibatalkan pada detail karya; halaman daftar My Favorites dijadwalkan Hari 6 bersama moderasi dan statistik Admin.
+Favorit dapat disimpan/dibatalkan pada detail karya atau dikelola melalui halaman Favorit Saya di dashboard Member.
 
 ## Mencoba karya dan galeri
 
