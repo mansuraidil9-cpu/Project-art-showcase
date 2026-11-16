@@ -79,19 +79,19 @@ export async function loginAction(previous, form) {
   try {
     const attempt = await allowAttempt("login", email);
     if (!attempt.allowed) return failure("Terlalu banyak percobaan. Coba kembali dalam 15 menit.", {}, values);
-    user = (await query("userEmail", [email])).rows[0];
-    // Hash pengganti menjaga pemeriksaan tetap berjalan untuk email yang tidak ditemukan.
-    const fallback = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6Ttxm4bkFI.l8eDjwqf9tCBX1yF1a";
-    const matches = await bcrypt.compare(password, user?.password_hash || fallback);
-    if (!user || !matches) return failure("Email atau password tidak cocok.", {}, values);
-
-    const session = await withTransaction(async (client) => {
-      const created = await createSession(user, client);
+    const result = await withTransaction(async (client) => {
+      const account = (await query("userEmailLock", [email], client)).rows[0];
+      // Kunci akun menyelaraskan login dengan pencabutan sesi saat password berubah.
+      const fallback = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6Ttxm4bkFI.l8eDjwqf9tCBX1yF1a";
+      if (!(await bcrypt.compare(password, account?.password_hash || fallback)) || !account) return null;
+      const created = await createSession(account, client);
       await query("limitDelete", [attempt.key], client);
       await query("sessionCleanup", [], client);
-      return created;
+      return { user: account, session: created };
     });
-    await setSessionCookie(session);
+    if (!result) return failure("Email atau password tidak cocok.", {}, values);
+    user = result.user;
+    await setSessionCookie(result.session);
   } catch (error) {
     logFailure("Login gagal:", error);
     return failure("Login belum berhasil. Periksa konfigurasi aplikasi atau coba lagi.", {}, values);
