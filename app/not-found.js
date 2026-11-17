@@ -1,5 +1,5 @@
 import Link from "next/link";
 export default function NotFound() {
-  return <main className="mx-auto max-w-xl px-5 py-20"><p className="text-sm text-stone-500">404</p><h1 className="mt-3 font-serif text-3xl">Ruang ini belum tersedia.</h1><Link href="/" className="mt-6 inline-block text-stone-800 underline">Kembali ke beranda</Link></main>;
+  return <main id="konten" className="site-container py-20"><p className="eyebrow">Atelier / 404</p><h1 className="page-heading mt-5 max-w-xl">Ruang ini belum tersedia.</h1><p className="mt-5 max-w-md text-sm leading-7 text-[var(--muted)]">Halaman atau karya yang kamu cari mungkin sudah dipindahkan. Masih banyak sudut pandang lain untuk ditemukan.</p><Link href="/" className="button-secondary mt-8">Kembali ke beranda</Link></main>;
 }
 

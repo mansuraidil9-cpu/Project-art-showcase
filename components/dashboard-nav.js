@@ -14,12 +14,12 @@ export default function DashboardNav({ role }) {
     [root + "/curators", "Verifikasi Curator"],
     [root + "/moderation", "Moderasi Konten"],
   ] : role === "member" ? [[root, "Ringkasan"], [root + "/artworks", "Karya Saya"], [root + "/artworks/new", "Unggah Karya"], [root + "/favorites", "Favorit Saya"], [root + "/submissions", "Submisi Saya"], [root + "/profile", "Profil Publik"], [root + "/account", "Akun Privat"]] : [[root, "Challenge Saya"], [root + "/challenges/new", "Buat Challenge"]];
-  return <nav aria-label={"Menu " + roleNames[role]} className="flex flex-wrap gap-2 border-b border-stone-300 py-5">
+  return <nav aria-label={"Menu " + roleNames[role]} className="flex flex-wrap gap-x-6 gap-y-2 border-b border-[var(--line)] py-5 sm:gap-x-8">
     {items.map(([href, label]) => {
       const selected = href === root ? pathname === root || (role === "curator" && pathname.startsWith(root + "/challenges/") && !pathname.endsWith("/new")) : href.endsWith("/artworks")
         ? pathname === href || (pathname.startsWith(href + "/") && !pathname.startsWith(href + "/new"))
         : pathname === href || pathname.startsWith(href + "/");
-      return <Link key={href} href={href} aria-current={selected ? "page" : undefined} className={"rounded-lg border px-4 py-2.5 text-sm font-semibold " + (selected ? "border-orange-800 bg-orange-50 text-orange-900" : "border-stone-300 text-stone-700 hover:text-orange-900")}>{label}</Link>;
+      return <Link key={href} href={href} aria-current={selected ? "page" : undefined} className={"border-b py-2 text-sm text-[var(--ink)] transition-colors " + (selected ? "border-[var(--ink)] font-semibold" : "border-transparent hover:border-[var(--line)]")}>{label}</Link>;
     })}
   </nav>;
 }
