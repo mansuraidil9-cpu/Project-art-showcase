@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 8 — challenge bagian kedua**. Pengelolaan submisi, pemilihan/pengumuman maksimal tiga pemenang, Submisi Saya, dan featured pemenang sudah tersedia. Tahap berikutnya adalah pengujian menyeluruh serta finalisasi dokumentasi/presentasi.
+Tahap saat ini: **Hari 9 — pengujian dan polesan**. Fitur wajib sampai pemilihan pemenang sudah tersedia. Pengujian tahap ini memperketat pemeriksaan sesi, menguji permintaan paralel, memperbarui dependency, dan memperbaiki pemulihan halaman error. Penyesuaian desain masih dalam pengerjaan; finalisasi dokumentasi/presentasi dilakukan pada Hari 10.
 
 ## Teknologi
 
@@ -41,7 +41,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3–8 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–9 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -97,6 +97,8 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - scripts/test-moderation.mjs: pengujian statistik, keputusan moderasi, penghapusan relasi, dan favorit privat.
 - scripts/test-challenges.mjs: pengujian challenge, zona waktu, kepemilikan, submisi unik, dan deadline setelah antrean kunci.
 - scripts/test-winners.mjs: pengujian pemenang, konflik dua tab, transaksi pengumuman, featured, dan riwayat submisi privat.
+- scripts/test-security.mjs: pengujian klaim wajib JWT dan sesi yang kedaluwarsa selama antrean kunci.
+- scripts/test-all.mjs: menjalankan seluruh rangkaian pengujian backend secara berurutan.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi karya dan foto profil unggahan; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
@@ -114,6 +116,25 @@ Panduan moderasi dan dashboard tersedia di docs/moderasi-dashboard.md, dengan ha
 Panduan challenge tersedia di docs/challenge.md, dengan hasil pemeriksaan di docs/verifikasi-hari-7.md.
 
 Panduan pemenang, Submisi Saya, dan featured tersedia di docs/pemenang-submisi.md, dengan hasil pemeriksaan di docs/verifikasi-hari-8.md.
+
+Hasil pemeriksaan backend dan pemulihan error tahap pengujian tersedia di docs/verifikasi-hari-9.md.
+
+## Menjalankan seluruh pengujian backend
+
+Hentikan server pengembangan dengan Ctrl+C, lalu jalankan dari folder proyek pada PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm test
+npm run lint
+npm run build
+npm run dev
+```
+
+npm test menjalankan pengujian token, keamanan sesi, database, autentikasi, Admin, karya, interaksi, moderasi, challenge, dan pemenang. Pengujian memerlukan database pengembangan yang sudah memiliki schema dan seed, membuat data sementara, lalu membersihkannya. Pemeriksaan berhenti ketika satu rangkaian gagal. Untuk hanya menguji perbaikan masa berlaku sesi, gunakan npm run security:test.
+
+Tahap ini tidak memerlukan migrasi atau seed ulang. Di pgAdmin, buka database/check-auth.sql melalui ikon folder Query Tool lalu tekan F5 untuk melihat status akun dan jumlah sesi aktif tanpa menampilkan token atau hash password. Ketika database tidak tersedia, halaman error menyediakan tombol coba lagi yang meminta ulang halaman dari server setelah koneksi pulih.
 
 ## Mencoba pengumuman pemenang
 
