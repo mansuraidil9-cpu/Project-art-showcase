@@ -108,7 +108,8 @@ export async function logoutAction() {
 }
 
 export async function deleteRejectedAccountAction(previous, form) {
-  await requireUser({ roles: ["curator"], allowUnapproved: true });
+  const actor = await requireUser({ roles: ["curator"], allowUnapproved: true });
+  if (actor.curator_status !== "rejected") return failure("Hanya Curator yang ditolak yang dapat menghapus akun melalui halaman ini.");
   const password = textField(form, "password");
   if (textField(form, "confirmation") !== "HAPUS") {
     return failure("Ketik HAPUS untuk mengonfirmasi penghapusan.");
@@ -116,18 +117,19 @@ export async function deleteRejectedAccountAction(previous, form) {
   if (!password || new TextEncoder().encode(password).length > 72) return failure("Masukkan password akunmu.");
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   try {
+    // Catat percobaan sebelum transaksi agar tidak meminjam koneksi kedua saat memegang kunci.
+    const attempt = await allowAttempt("delete", String(actor.id), 5);
+    if (!attempt.allowed) return failure("Terlalu banyak percobaan. Coba kembali dalam 15 menit.");
     const result = await withTransaction(async (client) => {
       const user = await getSessionUser(token, client, true);
       if (!user || user.role !== "curator" || user.curator_status !== "rejected") return "forbidden";
-      const attempt = await allowAttempt("delete", String(user.id), 5);
-      if (!attempt.allowed) return "limited";
       const account = (await query("accountPassword", [user.id], client)).rows[0];
       if (!account || !(await bcrypt.compare(password, account.password_hash))) return "password";
       const removed = await query("accountDelete", [user.id], client);
+      if (removed.rowCount === 1) await query("limitDelete", [attempt.key], client);
       return removed.rowCount === 1 ? "deleted" : "forbidden";
     });
     if (result === "forbidden") return failure("Hanya Curator yang ditolak yang dapat menghapus akun melalui halaman ini.");
-    if (result === "limited") return failure("Terlalu banyak percobaan. Coba kembali dalam 15 menit.");
     if (result === "password") return failure("Password tidak cocok. Akun belum dihapus.");
   } catch (error) {
     logFailure("Penghapusan akun gagal:", error);

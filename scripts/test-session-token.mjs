@@ -20,15 +20,15 @@ const expired = await signSessionToken(42, sessionId, new Date(Date.now() - 6000
 assert.equal(await verifySessionToken(expired), null);
 
 const wrongIssuer = await new SignJWT({}).setProtectedHeader({ alg: "HS256" })
-  .setSubject("42").setJti(sessionId).setIssuer("aplikasi-lain")
+  .setSubject("42").setJti(sessionId).setIssuedAt().setIssuer("aplikasi-lain")
   .setAudience("ruang-karya-web").setExpirationTime("1m").sign(key);
 assert.equal(await verifySessionToken(wrongIssuer), null);
 const wrongAudience = await new SignJWT({}).setProtectedHeader({ alg: "HS256" })
-  .setSubject("42").setJti(sessionId).setIssuer("ruang-karya")
+  .setSubject("42").setJti(sessionId).setIssuedAt().setIssuer("ruang-karya")
   .setAudience("aplikasi-lain").setExpirationTime("1m").sign(key);
 assert.equal(await verifySessionToken(wrongAudience), null);
 const wrongKey = await new SignJWT({}).setProtectedHeader({ alg: "HS256" })
-  .setSubject("42").setJti(sessionId).setIssuer("ruang-karya")
+  .setSubject("42").setJti(sessionId).setIssuedAt().setIssuer("ruang-karya")
   .setAudience("ruang-karya-web").setExpirationTime("1m")
   .sign(randomBytes(32));
 assert.equal(await verifySessionToken(wrongKey), null);
