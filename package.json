@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node scripts/test-all.mjs",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
@@ -17,7 +18,8 @@
     "member:test": "node --conditions=react-server scripts/test-member.mjs",
     "moderation:test": "node --conditions=react-server scripts/test-moderation.mjs",
     "challenge:test": "node --conditions=react-server scripts/test-challenges.mjs",
-    "winner:test": "node --conditions=react-server scripts/test-winners.mjs"
+    "winner:test": "node --conditions=react-server scripts/test-winners.mjs",
+    "security:test": "node --conditions=react-server scripts/test-security.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -27,7 +29,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.34.5"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -35,6 +37,9 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.29",
     "tailwindcss": "^4"
+  },
+  "overrides": {
+    "postcss": "8.5.33"
   },
   "type": "module"
 }
