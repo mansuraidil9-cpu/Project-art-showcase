@@ -1,8 +1,14 @@
-# Ruang Karya
+# Atelier
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 9 — pengujian dan polesan**. Fitur wajib sampai pemilihan pemenang sudah tersedia. Pengujian tahap ini memperketat pemeriksaan sesi, menguji permintaan paralel, memperbarui dependency, dan memperbaiki pemulihan halaman error. Penyesuaian desain masih dalam pengerjaan; finalisasi dokumentasi/presentasi dilakukan pada Hari 10.
+Tahap saat ini: **Hari 9 — pengujian dan polesan selesai**. Fitur wajib sampai pemilihan pemenang sudah tersedia. Tahap ini mencakup pengujian sesi/permintaan paralel, pembaruan dependency, pemulihan halaman error, serta desain Atelier dengan gaya galeri editorial. Finalisasi dokumentasi/presentasi dilakukan pada Hari 10.
+
+Nama antarmuka berubah dari Ruang Karya menjadi Atelier. Nama folder repository, database, cookie sesi, dan akun contoh tetap dipakai agar instalasi serta data yang sudah ada terus bekerja. Panduan tema, komponen, dan gambar tersedia di [docs/tampilan-atelier.md](docs/tampilan-atelier.md); sumber foto berlisensi CC0 dicatat di [docs/aset-visual.md](docs/aset-visual.md).
+
+![Pratinjau beranda Atelier di layar laptop](docs/images/atelier-desktop.png)
+
+[Lihat pratinjau di HP](docs/images/atelier-mobile.png).
 
 ## Teknologi
 

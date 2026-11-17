@@ -1,6 +1,6 @@
 # Pemeriksaan Hari 9
 
-Pemeriksaan berjalan pada 17 November 2026 WITA menggunakan Linux cloud, Node.js 24.22.1, PostgreSQL 18.6, Next.js 15.5.29, dan Chromium. Catatan ini mencakup backend dan pemulihan error; penyesuaian desain belum dinyatakan selesai.
+Pemeriksaan backend berjalan pada 17 November 2026 WITA dan dilanjutkan dengan desain Atelier pada 18 November 2026 WITA, menggunakan Linux cloud, Node.js 24.22.1, PostgreSQL 18.6, Next.js 15.5.29, dan Chromium.
 
 ## Temuan dan perbaikan
 
@@ -41,7 +41,27 @@ Pengujian browser tambahan memakai data sementara pada database cloud. Pengujian
 
 Pengujian pemulihan menunda pembacaan akun untuk memeriksa state loading, lalu memutus koneksi database aplikasi uji. Halaman menampilkan error dan API sesi mengembalikan 503 dengan no-store tanpa kredensial. Setelah koneksi dipulihkan, tombol coba lagi menampilkan dashboard serta respons API 200. Skrip browser menggunakan lingkungan cloud dan tidak menjadi perintah instalasi Windows.
 
-Pemeriksaan ini belum menutup Hari 9. Penyesuaian tema dan gambar serta pemeriksaan ulang tampilan sesudahnya masih perlu diselesaikan.
+## Desain Atelier
+
+Nama tampilan menjadi Atelier dengan teks Indonesia, latar krem, tipografi serif, garis tipis, galeri empat kolom di desktop, dan dua kolom di HP. Pembaruan mencakup beranda, navigasi, detail/profil/challenge, autentikasi, semua dashboard/form, loading, error, dan 404. Foto pembuka berlisensi CC0 tersimpan lokal; sumbernya tercatat di docs/aset-visual.md. Karya portofolio dan konfigurasi sesi tetap dipakai.
+
+Panduan file, tema, gambar, pemeriksaan lokal, dan bahan pemahaman tersedia di docs/tampilan-atelier.md. Skema, seed, dan migrasi tidak berubah pada pembaruan tampilan ini.
+
+Sebanyak 124 pemeriksaan halaman/ukuran layar lulus pada build produksi: halaman publik diuji pada 320, 390, 768, 1024, dan 1366 piksel; dashboard serta status peran diuji pada 320, 390, 768, dan 1366 piksel. Pemeriksaan memastikan konten asli dari database tersedia, judul memakai Atelier, tidak ada overflow horizontal, teks biru, gambar rusak, maupun error JavaScript. Pratinjau ada di docs/images/atelier-desktop.png dan atelier-mobile.png. Lint dan build produksi lulus setelah penyesuaian jarak serta ikon SVG.
+
+Pengujian ulang alur browser setelah perubahan desain:
+
+| Modul | Hasil |
+| --- | --- |
+| Autentikasi | Lulus: register, login/logout, cookie, peran/status, pencabutan sesi, dan pembatasan percobaan |
+| Admin | Lulus: kategori, filter/hapus pengguna, perlindungan Admin, dan verifikasi Curator |
+| Karya | Lulus: unggah, koreksi form tanpa memilih ulang gambar, tags, metadata, kepemilikan, pencarian, serta hapus/404 |
+| Interaksi/profil | Lulus: suka/favorit/komentar/laporan, foto, tautan aman, perubahan email/password, dan pencabutan sesi lain |
+| Moderasi | Lulus: statistik, antrean, dismiss/take down, relasi/berkas, serta favorit privat |
+| Challenge | Lulus: CRUD, zona waktu, role/status, submit/withdraw/deadline, banner, dan paginasi |
+| Pemenang | Lulus: maksimal tiga, kandidat/rank unik, konflik dua tab, pengumuman, featured, submisi privat, dan dampak take down |
+
+Hari 9 selesai. Hari 10 untuk finalisasi dokumentasi dan latihan presentasi belum dimulai.
 
 ## Mengecek hasil lokal
 
