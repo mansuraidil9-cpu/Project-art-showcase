@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Ruang Karya | Art Showcase",
-  description: "Ruang untuk karya, cerita, dan pertemuan kreatif.",
+  title: "Atelier | Galeri Karya dan Cerita",
+  description: "Galeri karya, cerita para kreator, dan pertemuan sudut pandang melalui challenge seni.",
 };
 
 export default function RootLayout({ children }) {
