@@ -23,7 +23,7 @@ Banner memakai validasi gambar yang sama dengan karya: JPEG/PNG/WebP statis, mak
 
 Service Curator memeriksa ulang sesi, role, dan curator_status di dalam transaksi. Curator Pending/Rejected ditolak meskipun cookie masih valid. Query edit/hapus selalu menyertakan curator_id dari sesi; ID Curator yang disisipkan ke form tidak dipakai.
 
-Challenge yang sudah memiliki pemenang boleh diperbarui metadata/banner-nya, tetapi jadwal dikunci agar tidak dibuka kembali setelah hasil ditetapkan. Form memakai ketelitian menit; timestamp lama tetap disimpan dengan presisi aslinya jika jadwal tidak diubah. Pemilihan dan penampilan pemenang dilanjutkan pada Hari 8.
+Challenge yang sudah memiliki pemenang boleh diperbarui metadata/banner-nya, tetapi jadwal dikunci agar tidak dibuka kembali setelah hasil ditetapkan. Form memakai ketelitian menit; timestamp lama tetap disimpan dengan presisi aslinya jika jadwal tidak diubah. Pemilihan dan penampilan pemenang Hari 8 dijelaskan di docs/pemenang-submisi.md.
 
 ## WITA dan batas waktu
 

@@ -2,7 +2,7 @@
 
 Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanuddin. Tema: Art Showcase Platform.
 
-Tahap saat ini: **Hari 7 — challenge bagian pertama**. CRUD challenge Curator, daftar/detail publik, challenge di beranda, submit satu karya, dan withdraw dengan validasi waktu backend sudah tersedia. Pengelolaan submisi/pemenang, My Submissions, dan featured dilanjutkan pada Hari 8.
+Tahap saat ini: **Hari 8 — challenge bagian kedua**. Pengelolaan submisi, pemilihan/pengumuman maksimal tiga pemenang, Submisi Saya, dan featured pemenang sudah tersedia. Tahap berikutnya adalah pengujian menyeluruh serta finalisasi dokumentasi/presentasi.
 
 ## Teknologi
 
@@ -41,7 +41,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3–7 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–8 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -96,6 +96,7 @@ Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak 
 - scripts/test-member.mjs: pengujian interaksi, laporan unik, profil/foto, dan perubahan akun privat.
 - scripts/test-moderation.mjs: pengujian statistik, keputusan moderasi, penghapusan relasi, dan favorit privat.
 - scripts/test-challenges.mjs: pengujian challenge, zona waktu, kepemilikan, submisi unik, dan deadline setelah antrean kunci.
+- scripts/test-winners.mjs: pengujian pemenang, konflik dua tab, transaksi pengumuman, featured, dan riwayat submisi privat.
 - public/examples/: ilustrasi seed.
 - public/uploads/: lokasi karya dan foto profil unggahan; isinya tidak masuk Git.
 - docs/: ERD, catatan pemahaman, dan hasil pemeriksaan.
@@ -111,6 +112,32 @@ Panduan interaksi dan pengaturan akun tersedia di docs/member.md, dengan hasil p
 Panduan moderasi dan dashboard tersedia di docs/moderasi-dashboard.md, dengan hasil pemeriksaan di docs/verifikasi-hari-6.md.
 
 Panduan challenge tersedia di docs/challenge.md, dengan hasil pemeriksaan di docs/verifikasi-hari-7.md.
+
+Panduan pemenang, Submisi Saya, dan featured tersedia di docs/pemenang-submisi.md, dengan hasil pemeriksaan di docs/verifikasi-hari-8.md.
+
+## Mencoba pengumuman pemenang
+
+Hentikan server lama dengan Ctrl+C, lalu jalankan dari folder proyek di PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm run winner:test
+npm run build
+npm run dev
+```
+
+Tidak ada migrasi atau seed ulang; akun dan data yang sudah ada tetap dipakai.
+
+1. Masuk sebagai Curator approved, misalnya kurator@ruangkarya.test dengan password contoh.
+2. Buka Kelola submisi pada challenge yang sudah berakhir. Seed menyediakan Bentuk yang Bercerita beserta peserta dan contoh pemenang.
+3. Pilih satu sampai tiga karya pada Juara 1, 2, dan 3. Karya yang sama tidak boleh mengisi dua peringkat.
+4. Simpan pengumuman, lalu buka detail challenge publik. Bagian Pemenang challenge menampilkan hasilnya; beranda menampilkan Sorotan para pemenang.
+5. Coba dua tab Kelola submisi. Simpan perubahan pada tab pertama, kemudian kirim pilihan lama dari tab kedua: backend harus meminta muat ulang.
+6. Masuk sebagai Member lalu buka Submisi Saya untuk melihat challenge, jadwal, peringkat, dan tombol withdraw sebelum berakhir.
+7. Di pgAdmin: art_showcase > Query Tool > ikon folder > buka database/check-winners.sql > F5. Pemeriksaan duplikat dan ketidaksesuaian challenge harus kosong.
+
+winner:test membuat akun, karya, challenge, dan pengumuman sementara, lalu membersihkannya. Tes mencakup kandidat dari challenge lain, peringkat/karya ganda, rollback hasil lama, keputusan dua tab, moderasi karya pemenang, serta privasi/paginasi submisi. Jalankan pada database pengembangan yang sudah berisi schema dan seed.
 
 ## Mencoba challenge
 
