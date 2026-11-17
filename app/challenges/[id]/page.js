@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/site-header";
 import ArtworkCard from "@/components/artwork-card";
+import WinnerCard from "@/components/winner-card";
 import GalleryPagination from "@/components/gallery-pagination";
 import { SubmissionForm, WithdrawForm } from "@/components/challenge-forms";
 import { getCurrentUser } from "@/lib/auth";
@@ -30,7 +31,7 @@ export default async function ChallengeDetail({ params, searchParams }) {
   let detail;
   try { detail = await getChallenge(id, search.page); }
   catch (error) { if (error instanceof ChallengeError && error.code === "NOT_FOUND") notFound();throw error; }
-  const { challenge, gallery } = detail, user = await getCurrentUser();
+  const { challenge, gallery, winners } = detail, user = await getCurrentUser();
   const owner = user?.role === "curator" && user.curator_status === "approved" && user.id === challenge.curator_id;
   const participation = user?.role === "member" ? await getParticipation((await cookies()).get(SESSION_COOKIE)?.value, id) : null;
   const notices = new Map([["created", "Challenge berhasil dibuat."], ["updated", "Challenge berhasil diperbarui."], ["updated-files", "Challenge diperbarui, namun banner lama belum dapat dibersihkan."], ["submitted", "Karyamu berhasil dikirim ke challenge."], ["withdrawn", "Submisi berhasil ditarik. Karya asli tetap ada di portofoliomu."]]);
@@ -43,6 +44,7 @@ export default async function ChallengeDetail({ params, searchParams }) {
         <Participation challenge={challenge} user={user} participation={participation} />
       </aside>
     </div>
+    <section id="pemenang" className="mt-14 border-t border-stone-300 pt-8" aria-labelledby="winners-title"><h2 id="winners-title" className="font-serif text-3xl">Pemenang challenge</h2>{winners.length ? <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{winners.map((winner) => <WinnerCard key={winner.rank} winner={winner} />)}</div> : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-7 leading-7 text-stone-600">{challenge.status === "ended" ? "Pemenang belum diumumkan." : "Pemenang akan diumumkan setelah challenge berakhir."}</p>}</section>
     <section id="submisi" className="mt-14 border-t border-stone-300 pt-8"><h2 className="font-serif text-3xl">Karya peserta <span className="text-stone-500">({gallery.total})</span></h2>{gallery.artworks.length ? <div className="mt-7 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">{gallery.artworks.map((artwork) => <ArtworkCard key={artwork.id} artwork={artwork} />)}</div> : <p className="mt-6 rounded-xl border border-dashed border-stone-300 p-7 leading-7 text-stone-600">Belum ada karya yang dikirim ke challenge ini.</p>}<GalleryPagination gallery={gallery} pathname={"/challenges/" + id} anchor="#submisi" label="Halaman karya peserta" /></section>
   </main></div>;
 }

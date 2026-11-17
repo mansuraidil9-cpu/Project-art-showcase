@@ -13,7 +13,7 @@ export default function DashboardNav({ role }) {
     [root + "/users", "Pengguna"],
     [root + "/curators", "Verifikasi Curator"],
     [root + "/moderation", "Moderasi Konten"],
-  ] : role === "member" ? [[root, "Ringkasan"], [root + "/artworks", "Karya Saya"], [root + "/artworks/new", "Unggah Karya"], [root + "/favorites", "Favorit Saya"], [root + "/profile", "Profil Publik"], [root + "/account", "Akun Privat"]] : [[root, "Challenge Saya"], [root + "/challenges/new", "Buat Challenge"]];
+  ] : role === "member" ? [[root, "Ringkasan"], [root + "/artworks", "Karya Saya"], [root + "/artworks/new", "Unggah Karya"], [root + "/favorites", "Favorit Saya"], [root + "/submissions", "Submisi Saya"], [root + "/profile", "Profil Publik"], [root + "/account", "Akun Privat"]] : [[root, "Challenge Saya"], [root + "/challenges/new", "Buat Challenge"]];
   return <nav aria-label={"Menu " + roleNames[role]} className="flex flex-wrap gap-2 border-b border-stone-300 py-5">
     {items.map(([href, label]) => {
       const selected = href === root ? pathname === root || (role === "curator" && pathname.startsWith(root + "/challenges/") && !pathname.endsWith("/new")) : href.endsWith("/artworks")

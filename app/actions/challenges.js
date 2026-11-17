@@ -3,10 +3,10 @@
 import { cookies } from "next/headers";
 import { requireUser } from "@/lib/auth";
 import { SESSION_COOKIE } from "@/lib/session-token";
-import { ChallengeError, createChallenge, updateChallenge, deleteChallenge, submitArtwork, withdrawSubmission } from "@/lib/challenges";
+import { ChallengeError, createChallenge, updateChallenge, deleteChallenge, submitArtwork, withdrawSubmission, selectWinners } from "@/lib/challenges";
 import { MemberError } from "@/lib/member";
 import { UploadError, removeUploads } from "@/lib/uploads";
-import { textField } from "@/lib/validation";
+import { textField, parseId } from "@/lib/validation";
 
 async function roleToken(role) { await requireUser({ roles: [role] }); return (await cookies()).get(SESSION_COOKIE)?.value; }
 function failure(error, values = {}) {
@@ -46,6 +46,17 @@ export async function withdrawSubmissionAction(previous, form) {
   const token = await roleToken("member");
   try {
     const result = await withdrawSubmission(token, textField(form, "challengeId"));
+    if (textField(form, "returnTo") === "submissions") return saved("/dashboard/member/submissions?notice=withdrawn&page=" + (parseId(textField(form, "page")) || 1));
     return saved("/challenges/" + result.challengeId + "?notice=withdrawn#partisipasi");
   } catch (error) { return failure(error); }
+}
+
+export async function selectWinnersAction(previous, form) {
+  const token = await roleToken("curator");
+  const values = Object.fromEntries([1, 2, 3].map((rank) => ["rank" + rank, textField(form, "rank" + rank)]));
+  const entries = [1, 2, 3].filter((rank) => values["rank" + rank] !== "").map((rank) => ({ rank, submissionId: values["rank" + rank] }));
+  try {
+    const result = await selectWinners(token, textField(form, "challengeId"), entries, textField(form, "expectedVersion"));
+    return saved("/dashboard/curator/challenges/" + result.id + "/submissions?notice=winners-saved#pemenang");
+  } catch (error) { return { ...failure(error, values), refresh: ["CONFLICT", "INVALID_SUBMISSION"].includes(error.code) }; }
 }
