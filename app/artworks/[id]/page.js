@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { parseId } from "@/lib/validation";
 import { formatDate } from "@/lib/format";
+import { demoArtCredit } from "@/lib/demo-art";
 
 export const metadata = { title: "Detail Karya | Atelier" };
 export default async function ArtworkDetail({ params, searchParams }) {
@@ -19,6 +20,7 @@ export default async function ArtworkDetail({ params, searchParams }) {
   const comments = (await query("artworkComments", [id])).rows;
   const owner = user?.role === "member" && user.id === artwork.member_id;
   const member = user?.role === "member";
+  const credit = demoArtCredit(artwork.file_path);
   const state = member ? (await query("interactionState", [id, user.id])).rows[0] : null;
   const message = new Map([["created", "Karya berhasil diunggah."], ["updated", "Cerita karya berhasil diperbarui."], ["interaction", "Pilihanmu berhasil disimpan."], ["comment", "Komentar berhasil dikirim."], ["comment-deleted", "Komentar berhasil dihapus."], ["reported", "Laporan berhasil dikirim untuk ditinjau Admin."]]).get((await searchParams).notice);
   return <div className="site-container">
@@ -33,7 +35,7 @@ export default async function ArtworkDetail({ params, searchParams }) {
       <div className="mt-8 grid items-start gap-9 lg:grid-cols-[1.65fr_1fr] lg:gap-14">
         <div className="min-w-0">
           <div className="relative aspect-[4/3] overflow-hidden bg-[#e9e6db]">
-            <Image src={artwork.file_path} alt={artwork.title} fill priority sizes="(max-width: 1023px) 100vw, 60vw" unoptimized={artwork.media_type === "image/svg+xml"} className="object-contain" />
+            <Image src={artwork.file_path} alt={artwork.title} fill priority quality={90} sizes="(max-width: 1023px) 100vw, 60vw" unoptimized={artwork.media_type === "image/svg+xml"} className="object-contain" />
           </div>
           <div className="mt-4 flex flex-wrap justify-between gap-3 border-b border-[var(--line)] pb-4 text-xs leading-6 text-[var(--muted)]">
             <span>{artwork.category} · {formatDate(artwork.created_at)}</span>
@@ -47,6 +49,7 @@ export default async function ArtworkDetail({ params, searchParams }) {
           <Link href={"/creators/" + artwork.member_id} className="text-link mt-5 inline-block max-w-full break-words text-sm">{artwork.display_name}</Link>
           <p className="mt-4 text-xs leading-6 text-[var(--muted)]">Dibagikan {formatDate(artwork.created_at)} WITA · {artwork.like_count} suka</p>
           <p className="mt-7 whitespace-pre-wrap break-words text-sm leading-7 text-[var(--muted)]">{artwork.description}</p>
+          {credit && <aside aria-label="Sumber gambar" className="mt-5 border-t border-[var(--line)] pt-4 text-xs leading-6 text-[var(--muted)]"><p>{credit.originalTitle} — {credit.artist}.</p><p><a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-link">Sumber gambar</a>{" · "}<a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer" className="text-link">{credit.license}</a></p><p>Reproduksi contoh; format dan ukuran disesuaikan.</p></aside>}
           <ul aria-label="Tags karya" className="mt-6 flex flex-wrap gap-2">
             {artwork.tags.map((tag) => <li key={tag} className="max-w-full break-words border border-[var(--line)] px-3 py-1.5 text-xs text-[var(--muted)]">{tag}</li>)}
           </ul>
