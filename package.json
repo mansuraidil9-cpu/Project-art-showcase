@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "db:check": "node scripts/check-db.mjs",
+    "db:demo": "node scripts/update-demo-assets.mjs",
+    "demo:test": "node scripts/test-demo-gallery.mjs",
     "db:test": "node --conditions=react-server scripts/test-db.mjs",
     "auth:secret": "node scripts/setup-session.mjs",
     "auth:test": "node --conditions=react-server scripts/test-auth.mjs",

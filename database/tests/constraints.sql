@@ -25,7 +25,7 @@ SELECT pg_temp.expect_failure($test$INSERT INTO winners(challenge_id,submission_
 SELECT pg_temp.expect_failure($test$INSERT INTO winners(challenge_id,submission_id,rank) VALUES(2,4,4)$test$,'23514');
 SELECT pg_temp.expect_failure($test$UPDATE challenges SET ends_at=starts_at WHERE id=1$test$,'23514');
 SELECT pg_temp.expect_failure($test$UPDATE artworks SET file_path='/uploads/pengganti.png' WHERE id=1$test$,'23514');
-SELECT pg_temp.expect_failure($test$DELETE FROM categories WHERE id=1$test$,'23001');
+SELECT pg_temp.expect_failure($test$DELETE FROM categories WHERE id=(SELECT category_id FROM artworks ORDER BY id LIMIT 1)$test$,'23001');
 SELECT pg_temp.expect_failure($test$UPDATE users SET curator_status=NULL WHERE id=5$test$,'23514');
 SELECT pg_temp.expect_failure($test$UPDATE users SET rejection_reason='' WHERE id=7$test$,'23514');
 SELECT '16 constraint diperiksa; perubahan dibatalkan.' AS hasil;
