@@ -4,7 +4,20 @@ Proyek final Praktikum Pemrograman Web 2026, Sistem Informasi Universitas Hasanu
 
 Tahap saat ini: **Hari 9 — pengujian dan polesan selesai**. Fitur wajib sampai pemilihan pemenang sudah tersedia. Tahap ini mencakup pengujian sesi/permintaan paralel, pembaruan dependency, pemulihan halaman error, serta desain Atelier dengan gaya galeri editorial. Finalisasi dokumentasi/presentasi dilakukan pada Hari 10.
 
-Nama antarmuka berubah dari Ruang Karya menjadi Atelier. Nama folder repository, database, cookie sesi, dan akun contoh tetap dipakai agar instalasi serta data yang sudah ada terus bekerja. Panduan tema, komponen, dan gambar tersedia di [docs/tampilan-atelier.md](docs/tampilan-atelier.md); sumber foto berlisensi CC0 dicatat di [docs/aset-visual.md](docs/aset-visual.md).
+Nama antarmuka berubah dari Ruang Karya menjadi Atelier. Nama folder repository, database, cookie sesi, dan akun contoh tetap dipakai agar instalasi serta data yang sudah ada terus bekerja. Panduan tema, komponen, dan gambar tersedia di [docs/tampilan-atelier.md](docs/tampilan-atelier.md); sumber foto, karya referensi, serta lisensinya dicatat di [docs/aset-visual.md](docs/aset-visual.md).
+
+Revisi tampilan memakai Bodoni Moda dan Cormorant Garamond Italic, foto galeri 2400 × 1600 piksel, serta enam karya contoh dengan panjang maksimal 2200 piksel. Judul, kategori, tags, dan banner mengikuti gambar yang dipakai. Tombol Cari di header membuka pencarian dan filter.
+
+Untuk memperbarui instalasi yang sudah berjalan, hentikan server dengan Ctrl+C lalu jalankan dari folder proyek di PowerShell:
+
+```powershell
+git pull --ff-only
+npm ci
+npm run db:demo
+npm run dev
+```
+
+db:demo menjalankan migrasi data contoh dalam satu transaksi, mempertahankan karya unggahan serta akun yang sudah ada, dan aman dijalankan ulang. Alternatif pgAdmin: buka database/migrations/003-demo-gallery.sql lalu F5. Jangan menjalankan ulang seed untuk mengganti gambar pada database lama.
 
 ![Pratinjau beranda Atelier di layar laptop](docs/images/atelier-desktop.png)
 
@@ -47,7 +60,7 @@ Pada Query Tool pgAdmin untuk art_showcase, jalankan **database/migrations/002-a
 
 ## Database di pgAdmin
 
-Hari 3–9 tidak menambah tabel atau mengubah skema. Jika database Hari 2 sudah berjalan, cukup perbarui kode; migrasi SQL tambahan tidak diperlukan.
+Hari 3–9 tidak menambah tabel atau mengubah struktur tabel. Revisi gambar menambah migrasi data contoh 003-demo-gallery.sql. Jika database Hari 2 sudah berjalan, perbarui kode lalu jalankan npm run db:demo.
 
 1. Buka server PostgreSQL lokal dan login.
 2. Klik kanan Databases > Create > Database. Nama: art_showcase.
@@ -85,7 +98,7 @@ Semua akun demo memakai password **RuangKarya2026!**, disimpan sebagai hash bcry
 | Curator pending | pending@ruangkarya.test |
 | Curator rejected | rejected@ruangkarya.test |
 
-Data dan identitas contoh bersifat fiktif. Enam SVG merupakan ilustrasi abstrak lokal untuk pengujian, bukan karya portofolio sungguhan. SVG contoh berada di public/examples; ini bukan izin menerima SVG dari unggahan pengguna. Validasi unggahan dibuat Hari 4.
+Identitas akun contoh bersifat fiktif. Enam karya referensi HD berada di public/examples/hd, dengan pembuat asli dan lisensi ditampilkan pada detail serta dicatat di docs/aset-visual.md. Data contoh menyediakan kategori Seni Lukis, Seni Patung, Cetak Grafis, dan Fotografi yang sesuai isi gambar. Unggahan pengguna menerima JPEG/PNG/WebP statis melalui validasi backend.
 
 ## Struktur
 
@@ -140,7 +153,7 @@ npm run dev
 
 npm test menjalankan pengujian token, keamanan sesi, database, autentikasi, Admin, karya, interaksi, moderasi, challenge, dan pemenang. Pengujian memerlukan database pengembangan yang sudah memiliki schema dan seed, membuat data sementara, lalu membersihkannya. Pemeriksaan berhenti ketika satu rangkaian gagal. Untuk hanya menguji perbaikan masa berlaku sesi, gunakan npm run security:test.
 
-Tahap ini tidak memerlukan migrasi atau seed ulang. Di pgAdmin, buka database/check-auth.sql melalui ikon folder Query Tool lalu tekan F5 untuk melihat status akun dan jumlah sesi aktif tanpa menampilkan token atau hash password. Ketika database tidak tersedia, halaman error menyediakan tombol coba lagi yang meminta ulang halaman dari server setelah koneksi pulih.
+Pengujian backend memakai data yang sudah tersedia. Untuk revisi gambar HD, jalankan npm run db:demo sekali; seed ulang tidak diperlukan. Di pgAdmin, buka database/check-auth.sql melalui ikon folder Query Tool lalu tekan F5 untuk melihat status akun dan jumlah sesi aktif tanpa menampilkan token atau hash password. Ketika database tidak tersedia, halaman error menyediakan tombol coba lagi yang meminta ulang halaman dari server setelah koneksi pulih.
 
 ## Mencoba pengumuman pemenang
 

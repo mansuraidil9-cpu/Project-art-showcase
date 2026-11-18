@@ -61,15 +61,25 @@ Pengujian ulang alur browser setelah perubahan desain:
 | Challenge | Lulus: CRUD, zona waktu, role/status, submit/withdraw/deadline, banner, dan paginasi |
 | Pemenang | Lulus: maksimal tiga, kandidat/rank unik, konflik dua tab, pengumuman, featured, submisi privat, dan dampak take down |
 
+## Revisi tipografi dan gambar HD
+
+Revisi lanjutan pada 18 November 2026 WITA memakai Bodoni Moda tegak dan Cormorant Garamond Italic pada baris judul yang sama. Font WOFF2 dilayani lokal dengan lisensi SIL OFL. Foto pembuka diganti versi 2400 × 1600 dari sumber asli 4032 × 3024 piksel. Enam karya referensi memakai WebP dengan panjang maksimal 2200 piksel; judul, kategori, tags, pembuat asli, serta banner mengikuti isi gambar.
+
+npm run demo:test lulus pada database uji terpisah: schema/seed dapat dijalankan dua kali, enam contoh lama berpindah ke gambar baru, pengulangan migrasi tidak mengubah data lagi, serta kategori khusus, judul yang disunting, jalur uploads, pemilik lain, dan banner pribadi dipertahankan. Akun dan relasi interaksi/submisi/pemenang tidak berubah. Kesalahan SQL membatalkan semua perubahan; trigger larangan mengganti file tetap aktif setelah sukses dan rollback.
+
+Pembaruan database pengembangan menghasilkan enam karya dan tiga banner yang diperbarui. Pengulangan menghasilkan nol perubahan. npm test lulus pada sepuluh rangkaian backend setelah data contoh diperbarui. Tes larangan menghapus kategori sekarang memilih kategori yang benar-benar sedang digunakan, sehingga tidak bergantung pada ID kategori lama.
+
+Pada build akhir, 129 pemeriksaan halaman/ukuran layar lulus tanpa overflow horizontal, teks biru, gambar rusak yang terlihat, atau error JavaScript. Font tegak dan miring terverifikasi memakai keluarga berbeda. Tombol Cari membuka filter melalui form GET; pencarian Losari dengan kategori Fotografi menghasilkan foto yang sesuai dan detail menampilkan sumber/lisensi. Gambar moderasi juga diverifikasi pada viewport 390: respons optimizer WebP 200 dan foto berhasil tampil. Lint dan npm run build lulus. Pratinjau laptop/HP pada docs/images diperbarui mengikuti revisi ini.
+
 Hari 9 selesai. Hari 10 untuk finalisasi dokumentasi dan latihan presentasi belum dimulai.
 
 ## Mengecek hasil lokal
 
-1. Perbarui proyek dengan git pull --ff-only, jalankan npm ci, kemudian npm test dan npm run build. Tidak ada perubahan skema atau migrasi baru.
+1. Perbarui proyek dengan git pull --ff-only, jalankan npm ci dan npm run db:demo, kemudian npm test dan npm run build. Struktur tabel tetap; revisi HD memakai migrasi data 003-demo-gallery.sql.
 2. Jalankan npm run dev. Masuk, buka dashboard sesuai peran, lalu keluar. Salinan sesi yang dicabut harus ditolak oleh backend.
 3. Daftarkan Curator percobaan, tolak melalui Admin, lalu coba konfirmasi penghapusan dengan password salah. Akun tetap ada; password benar dan konfirmasi HAPUS diperlukan untuk menghapusnya.
 4. Untuk memeriksa error, gunakan database pengembangan tersendiri. Ketika koneksi tidak tersedia, halaman harus menampilkan pesan yang rapi. Pulihkan koneksi, kemudian gunakan tombol coba lagi.
-5. Di pgAdmin: pilih art_showcase > Query Tool > ikon folder > buka database/check-auth.sql > F5. Hasil menampilkan status akun dan sesi aktif. Jangan mengetik nama file sebagai perintah SQL.
+5. Di pgAdmin: pilih art_showcase > Query Tool > ikon folder > buka database/check-demo-gallery.sql > F5. Terlihat judul, kategori, tags, jalur gambar, banner, serta trigger yang aktif. database/check-auth.sql tetap dapat dipakai untuk sesi. Jangan mengetik nama file sebagai perintah SQL.
 
 ## Hal yang perlu dipahami
 
